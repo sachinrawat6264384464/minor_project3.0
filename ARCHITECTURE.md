@@ -7,115 +7,92 @@ An enterprise-grade, end-to-end AI platform designed for PhD scholars, academics
 ## 1. High-Level System Architecture
 
 ```mermaid
-flowchart TB
-    subgraph Client_Tier["Client Presentation Tier (Next.js 15 + React 19)"]
-        UI_Studio["Scholar Studio & Staging\n(/scholar-studio)"]
-        UI_Discovery["Global Paper Discovery\n(/papers)"]
-        UI_Workspace["Workspace & Paper Manager\n(/workspace/[id])"]
-        UI_Chat["Grounded Research Chat\n(/chat/[id])"]
-        UI_Gaps["9-Stage Gap Discovery\n(/research-gaps/[id])"]
-        UI_Compare["Side-by-Side Matrix\n(/compare)"]
-        UI_Trends["Analytics & Velocity\n(/trends/[id])"]
-        UI_Reports["Literature Reports\n(/reports)"]
+graph TD
+    classDef client fill:#1E3A8A,stroke:#3B82F6,stroke-width:2px,color:#FFFFFF;
+    classDef api fill:#0F172A,stroke:#64748B,stroke-width:2px,color:#FFFFFF;
+    classDef engine fill:#1E293B,stroke:#38BDF8,stroke-width:2px,color:#FFFFFF;
+    classDef db fill:#064E3B,stroke:#10B981,stroke-width:2px,color:#FFFFFF;
+    classDef external fill:#4C1D95,stroke:#A855F7,stroke-width:2px,color:#FFFFFF;
+
+    subgraph Tier1["1. CLIENT PRESENTATION TIER (Next.js 15 + React 19)"]
+        UI_MAIN["Frontend Web Application (Royal Blue & Royal White UI)"]
+        UI_A["Scholar Studio & Staging\n(/scholar-studio)"]
+        UI_B["Grounded RAG Chat\n(/chat/[id])"]
+        UI_C["9-Stage Gap Discovery\n(/research-gaps/[id])"]
+        UI_D["Side-by-Side Comparison\n(/compare)"]
     end
 
-    subgraph Gateway_Tier["API Gateway & Controllers (FastAPI :8000)"]
-        API_Auth["/api/v1/auth (JWT Security)"]
-        API_Projects["/api/v1/projects (Workspaces)"]
-        API_Papers["/api/v1/papers (Search, Upload, Batch Ingest)"]
-        API_Chat["/api/v1/chat (RAG Sessions)"]
-        API_Gaps["/api/v1/research-gaps (Gap Engine)"]
-        API_Compare["/api/v1/compare (Extraction Grid)"]
-        API_Trends["/api/v1/trends (Bibliometrics)"]
-        API_Graph["/api/v1/graph (Citation Networks)"]
-        API_Reports["/api/v1/reports (Export Engine)"]
+    subgraph Tier2["2. API GATEWAY & CONTROLLERS (FastAPI :8000)"]
+        GATEWAY["FastAPI Application Router & Middleware"]
+        AUTH["OAuth2 JWT Auth & Security Guard"]
     end
 
-    subgraph Service_Tier["Core Processing & AI Services"]
-        SVC_Discovery["Academic Discovery Service\n(SerpAPI + OpenAlex + Semantic Scholar)"]
-        SVC_Ingestion["PDF Ingestion Service\n(PyMuPDF + Section-Aware Parser)"]
-        SVC_Storage["Object Storage Service\n(Neon S3 / Tigris + Local Fallback)"]
-        SVC_GapEngine["9-Stage Research Gap Engine\n(Counter-Evidence Verification)"]
-        SVC_LLM["LLM Grounding Service\n(Prompt Construction + Citation Synthesizer)"]
-    end
-
-    subgraph RAG_Engine["Multi-Strategy Hybrid RAG Subsystem"]
-        RAG_Router["Query Intent Router"]
-        RAG_Rewriter["Academic Query Expansion"]
-        RAG_Dense["Dense Vector Retriever\n(BAAI/bge-small-en-v1.5)"]
-        RAG_Sparse["BM25 Lexical Retriever\n(rank_bm25 Okapi)"]
-        RAG_RRF["Reciprocal Rank Fusion (RRF)"]
-        RAG_Rerank["Cross-Encoder Reranker\n(BAAI/bge-reranker-base)"]
-        RAG_ParentChild["Parent-Child Context Enricher"]
-        RAG_Citations["Verifiable Citation Card Builder"]
-    end
-
-    subgraph Persistence_Tier["Persistence & Infrastructure Tier (Neon PostgreSQL)"]
-        NEON_PG[("Neon Serverless PostgreSQL")]
-        NEON_VECTOR["pgvector Extension\n(Native Vector Store)"]
-        NEON_BUCKET["Neon Object Storage\n(S3-Compatible PDF & Media Bucket)"]
+    subgraph Tier3["3. PROCESSING ENGINES & HYBRID RAG"]
+        subgraph Sub_Discovery["Pipeline A: Literature Sourcing & Ingestion"]
+            DISC_SVC["Academic Discovery Service\n(SerpAPI + OpenAlex + Semantic Scholar)"]
+            INGEST["PyMuPDF Ingestion Engine\n(Section Boundaries + 500w Sliding Window)"]
+        end
         
-        TBL_CHUNKS[("document_chunks (384-dim Vectors)")]
-        TBL_PAPERS[("papers & paper_sections")]
-        TBL_RELATIONAL[("users, projects, conversations,\nmessages, gaps, evidence, reports")]
+        subgraph Sub_RAG["Pipeline B: Multi-Strategy Hybrid RAG Engine"]
+            RETRIEVER["Hybrid Fusion Retriever (RRF)\n(Dense BGE 384d + Sparse BM25Okapi)"]
+            RERANK["Cross-Encoder Reranker\n(BAAI/bge-reranker-base)"]
+            CITATIONS["Verifiable Citation Card Builder\n(Paper Title, DOI, Page Number, Excerpt)"]
+            LLM_SVC["LLM Grounding Service\n(Strict Zero-Hallucination Prompting)"]
+        end
+
+        subgraph Sub_Gap["Pipeline C: 9-Stage Research Gap Engine"]
+            GAP_SVC["9-Stage Research Gap Engine\n(Counter-Evidence Verification & Validation Experiments)"]
+        end
     end
 
-    subgraph External_Cloud["External Cloud Providers"]
-        EXT_GOOGLE["Google Scholar via SerpAPI"]
-        EXT_OPENALEX["OpenAlex Open Index"]
-        EXT_S2["Semantic Scholar API"]
+    subgraph Tier4["4. CLOUD PERSISTENCE TIER (Neon PostgreSQL + S3)"]
+        NEON_PG[("Neon Serverless PostgreSQL\n(13 Relational Tables)")]
+        NEON_VEC[("Neon pgvector Vector Store\n(384-dim Dense Embeddings)")]
+        NEON_S3[("Neon Object Storage Bucket\n(Raw PDFs & Literature Media)")]
+    end
+
+    subgraph Tier5["5. EXTERNAL AI & ACADEMIC CONNECTORS"]
+        EXT_SCHOLAR["Google Scholar API (via SerpAPI)"]
+        EXT_OPENALEX["OpenAlex & Semantic Scholar"]
         EXT_OPENAI["OpenAI API (gpt-4o-mini)"]
     end
 
     %% Client to Gateway
-    UI_Studio --> API_Papers
-    UI_Discovery --> API_Papers
-    UI_Workspace --> API_Papers
-    UI_Workspace --> API_Projects
-    UI_Chat --> API_Chat
-    UI_Gaps --> API_Gaps
-    UI_Compare --> API_Compare
-    UI_Trends --> API_Trends
-    UI_Reports --> API_Reports
+    UI_MAIN -->|REST API / JSON| GATEWAY
+    GATEWAY --> AUTH
 
-    %% Gateway to Services
-    API_Papers --> SVC_Discovery
-    API_Papers --> SVC_Ingestion
-    API_Papers --> SVC_Storage
-    API_Chat --> RAG_Router
-    API_Chat --> SVC_LLM
-    API_Gaps --> SVC_GapEngine
+    %% Gateway to Engines
+    GATEWAY -->|Search & Batch Sourcing| DISC_SVC
+    GATEWAY -->|Direct PDF Uploads| INGEST
+    GATEWAY -->|Grounded RAG Queries| RETRIEVER
+    GATEWAY -->|Gap Discovery Requests| GAP_SVC
+
+    %% Engine to External
+    DISC_SVC <-->|Live Google Scholar Search| EXT_SCHOLAR
+    DISC_SVC <-->|Open-Access DOI Search| EXT_OPENALEX
+    LLM_SVC <-->|Grounded Synthesis| EXT_OPENAI
+    GAP_SVC <-->|Hypothesis Formulation| EXT_OPENAI
+
+    %% Ingestion to Storage
+    INGEST -->|Stores PDF Documents| NEON_S3
+    INGEST -->|Computes & Saves 384d Vectors| NEON_VEC
+    INGEST -->|Stores Metadata & Sections| NEON_PG
+
+    %% RAG Pipeline Data Flow
+    RETRIEVER <-->|Hybrid Cosine & Lexical Match| NEON_VEC
+    RETRIEVER -->|Top Candidates| RERANK
+    RERANK -->|Scored Chunks| CITATIONS
+    CITATIONS -->|Enriched Citations| LLM_SVC
     
-    %% Discovery & Ingestion connections
-    SVC_Discovery --> EXT_GOOGLE
-    SVC_Discovery --> EXT_OPENALEX
-    SVC_Discovery --> EXT_S2
-    SVC_Ingestion --> SVC_Storage
-    SVC_Ingestion --> RAG_Dense
-    SVC_Storage --> NEON_BUCKET
+    %% Relational Persistence
+    GATEWAY <-->|Projects, Users, Conversations| NEON_PG
+    GAP_SVC <-->|Saves Gaps & Evidence| NEON_PG
 
-    %% RAG Pipeline
-    RAG_Router --> RAG_Rewriter
-    RAG_Rewriter --> RAG_Dense
-    RAG_Rewriter --> RAG_Sparse
-    RAG_Dense --> RAG_RRF
-    RAG_Sparse --> RAG_RRF
-    RAG_RRF --> RAG_Rerank
-    RAG_Rerank --> RAG_ParentChild
-    RAG_ParentChild --> RAG_Citations
-    RAG_Citations --> SVC_LLM
-    SVC_LLM --> EXT_OPENAI
-    SVC_GapEngine --> EXT_OPENAI
-
-    %% Persistence Wiring
-    NEON_PG --- NEON_VECTOR
-    NEON_VECTOR --- TBL_CHUNKS
-    NEON_PG --- TBL_PAPERS
-    NEON_PG --- TBL_RELATIONAL
-    RAG_Dense <--> TBL_CHUNKS
-    RAG_Sparse <--> TBL_CHUNKS
-    API_Projects <--> TBL_RELATIONAL
-    API_Auth <--> TBL_RELATIONAL
+    class UI_MAIN,UI_A,UI_B,UI_C,UI_D client;
+    class GATEWAY,AUTH api;
+    class INGEST,DISC_SVC,RETRIEVER,RERANK,CITATIONS,LLM_SVC,GAP_SVC engine;
+    class NEON_PG,NEON_VEC,NEON_S3 db;
+    class EXT_SCHOLAR,EXT_OPENALEX,EXT_OPENAI external;
 ```
 
 ---

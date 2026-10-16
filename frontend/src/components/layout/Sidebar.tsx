@@ -19,7 +19,8 @@ import {
   Activity,
   Plus,
   ShieldAlert,
-  Database
+  Database,
+  Cpu
 } from "lucide-react";
 import { apiRequest } from "@/lib/api";
 import { Project } from "@/types";
@@ -88,6 +89,7 @@ export default function Sidebar({ projectId }: SidebarProps) {
     { label: "Dashboard", href: "/dashboard", icon: Layers },
     { label: "Scholar Studio (SerpAPI)", href: "/scholar-studio", icon: Database },
     { label: "Global Paper Discovery", href: "/papers", icon: Search },
+    { label: "System Architecture", href: "/architecture", icon: Cpu },
     { label: "Compare Papers", href: "/compare", icon: GitCompare },
     { label: "Literature Reports", href: "/reports", icon: FileText },
   ];

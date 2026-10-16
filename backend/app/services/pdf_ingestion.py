@@ -264,9 +264,8 @@ class PDFIngestionService:
                 if resp.status_code == 200 and len(resp.content) > 1000 and resp.content[:4] == b"%PDF":
                     file_id = str(uuid.uuid4())
                     clean_filename = f"{file_id}.pdf"
-                    file_path = os.path.join(settings.UPLOAD_DIR, clean_filename)
-                    with open(file_path, "wb") as f:
-                        f.write(resp.content)
+                    from app.services.storage_service import storage_service
+                    file_path = storage_service.upload_file(resp.content, clean_filename)
                     
                     paper.local_file_path = file_path
                     paper.file_hash = self.compute_file_hash(resp.content)

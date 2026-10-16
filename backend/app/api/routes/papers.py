@@ -134,12 +134,11 @@ async def upload_pdf_paper(
     content = await file.read()
     file_hash = pdf_ingestion_service.compute_file_hash(content)
 
-    # Save to disk
+    # Save to Neon Object Storage bucket or local directory
     file_id = str(uuid.uuid4())
     saved_filename = f"{file_id}_{file.filename}"
-    file_path = os.path.join(settings.UPLOAD_DIR, saved_filename)
-    with open(file_path, "wb") as f:
-        f.write(content)
+    from app.services.storage_service import storage_service
+    file_path = storage_service.upload_file(content, saved_filename)
 
     clean_title = file.filename.replace(".pdf", "").replace("_", " ").title()
 

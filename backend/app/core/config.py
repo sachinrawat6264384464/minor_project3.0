@@ -31,10 +31,23 @@ class Settings(BaseSettings):
     # External APIs
     SERPAPI_API_KEY: Optional[str] = None
     SEMANTIC_SCHOLAR_API_KEY: Optional[str] = None
+    # Models & AI Providers
+    AI_PROVIDER: str = "openai"  # "openai" | "gemini" | "groq" | "ollama"
     OPENAI_API_KEY: Optional[str] = None
-
-    # Models
     LLM_MODEL: str = "gpt-4o-mini"
+    OPENAI_MODEL: str = "gpt-4o-mini"
+    
+    # Google Gemini
+    GEMINI_API_KEY: Optional[str] = None
+    GEMINI_MODEL: str = "gemini-1.5-flash"
+    
+    # Groq (Ultra-fast free LLaMA 3.3)
+    GROQ_API_KEY: Optional[str] = None
+    GROQ_MODEL: str = "llama-3.3-70b-versatile"
+    
+    # Ollama
+    OLLAMA_BASE_URL: str = "http://localhost:11434"
+    OLLAMA_MODEL: str = "llama3:latest"
     EXTRACTION_LLM_MODEL: str = "gpt-4o-mini"
     EMBEDDING_MODEL_NAME: str = "BAAI/bge-small-en-v1.5"
     USE_LOCAL_EMBEDDINGS: bool = True

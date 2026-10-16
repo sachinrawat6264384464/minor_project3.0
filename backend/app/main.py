@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.db.session import SessionLocal
 from app.db.init_db import init_db
-from app.api.routes import auth, projects, papers, chat, compare, gaps, trends, graph, reports
+from app.api.routes import auth, projects, papers, chat, compare, gaps, trends, graph, reports, novelty
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -48,6 +48,7 @@ app.include_router(gaps.router, prefix=f"{settings.API_V1_STR}/research-gaps", t
 app.include_router(trends.router, prefix=f"{settings.API_V1_STR}/trends", tags=["Analytics & Trends"])
 app.include_router(graph.router, prefix=f"{settings.API_V1_STR}/graph", tags=["Knowledge Graph"])
 app.include_router(reports.router, prefix=f"{settings.API_V1_STR}/reports", tags=["Reports"])
+app.include_router(novelty.router, prefix=f"{settings.API_V1_STR}/novelty", tags=["Novelty Checker"])
 
 if __name__ == "__main__":
     import uvicorn

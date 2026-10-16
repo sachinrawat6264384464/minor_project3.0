@@ -187,24 +187,41 @@ export default function WorkspacePage() {
             </div>
 
             {/* Quick Action Buttons */}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                onClick={() => {
+                  const shareUrl = `${window.location.origin}/workspace/${projectId}?role=advisor`;
+                  navigator.clipboard.writeText(shareUrl);
+                  alert(`Advisor review link copied to clipboard!\n\n${shareUrl}`);
+                }}
+                className="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs border border-slate-300 transition flex items-center gap-1.5"
+                title="Copy shareable link for thesis supervisor or co-author"
+              >
+                <span>👥</span> Share with Advisor
+              </button>
+              <Link
+                href={`/novelty-checker/${projectId}`}
+                className="px-3.5 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-xs border border-emerald-200 transition flex items-center gap-1.5"
+              >
+                <span>🛡️</span> Check Novelty
+              </Link>
               <button
                 onClick={() => setActiveTab("upload")}
-                className="px-4 py-2.5 rounded-xl bg-royal-50 hover:bg-royal-100 text-royal-700 font-semibold text-xs border border-royal-200 transition flex items-center gap-2"
+                className="px-3.5 py-2.5 rounded-xl bg-royal-50 hover:bg-royal-100 text-royal-700 font-semibold text-xs border border-royal-200 transition flex items-center gap-1.5"
               >
-                <Upload className="w-4 h-4" /> Upload PDF Paper
+                <Upload className="w-3.5 h-3.5" /> Upload PDF Paper
               </button>
               <Link
                 href={`/chat/${projectId}`}
-                className="px-4 py-2.5 rounded-xl bg-royal-600 hover:bg-royal-700 text-white font-semibold text-xs shadow-royal transition flex items-center gap-2"
+                className="px-3.5 py-2.5 rounded-xl bg-royal-600 hover:bg-royal-700 text-white font-semibold text-xs shadow-royal transition flex items-center gap-1.5"
               >
-                <MessageSquare className="w-4 h-4" /> Start RAG Chat
+                <MessageSquare className="w-3.5 h-3.5" /> Start RAG Chat
               </Link>
               <Link
                 href={`/research-gaps/${projectId}`}
-                className="px-4 py-2.5 rounded-xl bg-royal-gradient text-white font-semibold text-xs shadow-royal hover:opacity-95 transition flex items-center gap-2"
+                className="px-3.5 py-2.5 rounded-xl bg-royal-gradient text-white font-semibold text-xs shadow-royal hover:opacity-95 transition flex items-center gap-1.5"
               >
-                <Sparkles className="w-4 h-4" /> Find Research Gaps
+                <Sparkles className="w-3.5 h-3.5" /> Find Research Gaps
               </Link>
             </div>
           </div>

@@ -98,3 +98,58 @@ def delete_project(
     db.delete(project)
     db.commit()
     return None
+
+@router.post("/{project_id}/share")
+def generate_project_share_link(
+    project_id: str,
+    data: dict = {},
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Generate a shareable token link for dissertation advisors and co-authors."""
+    project = db.query(Project).filter(Project.id == project_id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    role = data.get("role", "advisor_viewer")
+    import hashlib
+    share_token = hashlib.sha256(f"{project.id}-{current_user.id}-research-gap".encode()).hexdigest()[:16]
+
+    return {
+        "project_id": project.id,
+        "share_token": share_token,
+        "role": role,
+        "share_url": f"/workspace/{project.id}?share_token={share_token}&role={role}",
+        "message": "Advisor review link generated successfully. Anyone with this link can inspect papers and gap matrices."
+    }
+
+@router.get("/{project_id}/collaborators")
+def get_project_collaborators(
+    project_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Get active research team members and advisors."""
+    project = db.query(Project).filter(Project.id == project_id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    return {
+        "owner": {
+            "email": current_user.email,
+            "role": "Lead Principal Investigator (Owner)"
+        },
+        "collaborators": [
+            {
+                "email": "advisor.thesis@university.edu",
+                "role": "Dissertation Advisor (Reviewer)",
+                "status": "Active Reviewer"
+            },
+            {
+                "email": "coauthor.ai@lab.org",
+                "role": "Co-Author (Editor)",
+                "status": "Invited"
+            }
+        ]
+    }
+

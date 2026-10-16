@@ -88,6 +88,7 @@ export default function Sidebar({ projectId }: SidebarProps) {
   const mainNavItems = [
     { label: "Dashboard", href: "/dashboard", icon: Layers },
     { label: "Scholar Studio (SerpAPI)", href: "/scholar-studio", icon: Database },
+    { label: "Thesis Novelty Checker", href: "/novelty-checker", icon: ShieldAlert },
     { label: "Global Paper Discovery", href: "/papers", icon: Search },
     { label: "System Architecture", href: "/architecture", icon: Cpu },
     { label: "Compare Papers", href: "/compare", icon: GitCompare },
@@ -98,7 +99,8 @@ export default function Sidebar({ projectId }: SidebarProps) {
     { label: "Workspace & Papers", href: `/workspace/${currentProjId}`, icon: BookOpen },
     { label: "Research Chat", href: `/chat/${currentProjId}`, icon: MessageSquare },
     { label: "Research Gap Finder", href: `/research-gaps/${currentProjId}`, icon: Sparkles },
-    { label: "Trends & Analytics", href: `/trends/${currentProjId}`, icon: TrendingUp },
+    { label: "Novelty Checker (0-100%)", href: `/novelty-checker/${currentProjId}`, icon: ShieldAlert },
+    { label: "Knowledge Graph", href: `/trends/${currentProjId}`, icon: TrendingUp },
   ];
 
   return (

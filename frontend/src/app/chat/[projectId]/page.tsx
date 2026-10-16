@@ -141,6 +141,12 @@ export default function ResearchChatPage() {
                   BM25 Lexical
                 </button>
               </div>
+
+              {/* LLM Provider Switcher Badge */}
+              <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-royal-50 border border-royal-200 rounded-xl text-xs font-bold text-royal-700">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>AI Provider: OpenAI gpt-4o-mini</span>
+              </div>
             </div>
 
             {/* Messages Scroll View */}

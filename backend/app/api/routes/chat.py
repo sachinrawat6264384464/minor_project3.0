@@ -73,6 +73,28 @@ async def chat_with_collection(
 
     return assistant_msg
 
+@router.get("/providers")
+def get_llm_providers():
+    """Return available LLM providers and their configuration status."""
+    return {
+        "active_provider": llm_service.provider,
+        "providers": llm_service.get_available_providers()
+    }
+
+@router.post("/provider/switch")
+def switch_llm_provider(data: dict):
+    """Switch active LLM provider (openai, gemini, groq, ollama)."""
+    new_provider = data.get("provider", "openai")
+    valid_providers = ["openai", "gemini", "groq", "ollama"]
+    if new_provider not in valid_providers:
+        raise HTTPException(status_code=400, detail=f"Invalid provider. Choose from {valid_providers}")
+    llm_service.provider = new_provider
+    return {
+        "status": "success",
+        "active_provider": llm_service.provider,
+        "message": f"Active AI provider switched to {new_provider.upper()}"
+    }
+
 @router.get("/conversations/{conversation_id}", response_model=ConversationResponse)
 def get_conversation_history(
     conversation_id: str,

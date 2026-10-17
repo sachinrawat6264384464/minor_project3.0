@@ -10,13 +10,13 @@ import {
   ArrowRight, 
   X, 
   Cpu, 
-  Layers,
-  ShieldCheck,
-  Zap,
-  HelpCircle,
-  FlaskConical,
-  GitBranch,
-  Circle
+  Layers, 
+  ShieldCheck, 
+  Zap, 
+  HelpCircle, 
+  FlaskConical, 
+  GitBranch, 
+  Circle 
 } from "lucide-react";
 import Link from "next/link";
 
@@ -44,7 +44,7 @@ export default function PaperOrbitalShowcase() {
       authors: ["Dr. Elena Rostova", "Prof. Marcus Thorne"],
       year: 2025,
       venue: "IEEE Transactions on Neural Networks",
-      category: "Vision Transformers & Medical Imaging",
+      category: "Vision Transformers",
       abstract: "This paper analyzes attention mechanisms across 45 MRI benchmarks, highlighting computational latency bottlenecks during 3D volume inference.",
       platformActions: [
         "Ingest PyMuPDF text & section boundaries (Abstract, Methods, Results, Limitations)",
@@ -58,127 +58,116 @@ export default function PaperOrbitalShowcase() {
     },
     {
       id: "paper-2",
-      title: "Evaluating RAG Passage Chunking Bottlenecks in Clinical QA",
-      authors: ["Sarah Jenkins", "Devon Patel"],
+      title: "Hybrid Retrieval-Augmented Generation for Verifiable Scientific Discovery",
+      authors: ["Dr. Aris Vance", "Dr. Lin Chen"],
       year: 2024,
-      venue: "ACM SIGKDD Conference",
-      category: "Hybrid RAG & Vector Retrieval",
-      abstract: "Passage fragmentation leads to hallucinated citations in medical RAG. We introduce section-aware parent-child chunking with RRF rank fusion.",
+      venue: "ACM Computing Surveys",
+      category: "Hybrid RAG Architecture",
+      abstract: "Evaluates Reciprocal Rank Fusion combining dense semantic embeddings with sparse BM25 lexical retrieval to eliminate citation hallucination.",
       platformActions: [
-        "Extract section-aware Parent-Child chunk hierarchies preserving page numbers",
-        "Execute Dense Vector Search + BM25 Lexical exact keyword lookup",
-        "Apply Reciprocal Rank Fusion (RRF) to eliminate zero-score hallucinated references",
+        "Index dense vectors with Neon PostgreSQL serverless pgvector",
+        "Run Okapi BM25 sparse keyword queries for technical formulas",
+        "Perform Cross-Encoder re-ranking on top-k fused candidate passages",
         "Export BibTeX citations directly for academic publication"
       ],
-      gapInsight: "Hierarchical chunking limited to text passages; multi-modal medical figures and table parsing remain underexplored.",
-      suggestedQuestion: "Can multi-modal RAG preserve factual precision across embedded medical chart tables?",
-      suggestedExperiment: "Benchmark parent-child table parsing against BioASQ clinical question-answering corpus."
+      gapInsight: "Lack of standardization for long-context multi-document cross-referencing in peer review.",
+      suggestedQuestion: "Can multi-hop graph retrieval outperform linear hybrid RAG across multi-paper matrices?",
+      suggestedExperiment: "Construct 50-node citation knowledge graph and measure top-1 answer precision vs vanilla RAG."
     },
     {
       id: "paper-3",
-      title: "Benchmarking Automated Research Gap Mining Across Systematic Reviews",
-      authors: ["Prof. Arthur Pendelton", "Dr. Hina Khan"],
+      title: "Automated Research Gap Identification via Counter-Evidence Synthesis",
+      authors: ["Prof. Sarah Jenkins", "Dr. David K. Miller"],
       year: 2024,
-      venue: "Artificial Intelligence Review",
-      category: "Automated Research Gap Analysis",
-      abstract: "Identifying novel research gaps requires multi-document evidence matrix construction. We evaluate candidate gap generation across 500 systematic reviews.",
+      venue: "Journal of Artificial Intelligence Research",
+      category: "Research Gap Formulation",
+      abstract: "Introduces structured 9-stage extraction protocol that verifies candidate limitations against counter-evidence in adjacent publications.",
       platformActions: [
-        "Run 9-Stage Research Gap Analysis Engine across project papers",
-        "Synthesize Cross-Paper Evidence Matrix comparing methods, datasets, and limitations",
-        "Validate candidate gaps against recent publications for counter-evidence",
+        "Automate limitation section isolation from PDF research papers",
+        "Cross-verify claims against Google Scholar / SerpAPI citations",
+        "Compute 0-100% Novelty Score against existing literature chunks",
         "Generate exportable Literature Review & Research Gap Reports in Markdown/PDF"
       ],
-      gapInsight: "Inadequate baseline comparisons against recent parameter-efficient fine-tuning (PEFT) models.",
-      suggestedQuestion: "Does automatic gap hypothesis generation match domain expert peer-reviewer evaluation?",
-      suggestedExperiment: "Conduct double-blind review comparing AI candidate gaps against PhD scholar thesis prospectuses."
+      gapInsight: "Limited automated hypothesis validation without human-in-the-loop experiment drafting.",
+      suggestedQuestion: "How reliably can LLMs formulate ablation experiments matching senior PhD peer-reviewers?",
+      suggestedExperiment: "Perform blind double-review study comparing AI gap suggestions against IEEE reviewer comments."
     }
   ];
 
   return (
-    <section className="py-24 px-8 relative overflow-hidden bg-gradient-to-b from-canvas via-royal-50/50 to-canvas border-y border-royal-border">
-      
-      {/* 360-DEGREE ROYAL BLUE CYBER ORBITAL RINGS BACKGROUND (Top, Bottom, Left, Right) */}
+    <section className="relative overflow-hidden py-16 px-6 md:px-12 text-black font-grotesk">
+      {/* MOME BRUTALIST 360-DEGREE CONCENTRIC ORBITS */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-        {/* Outer Ring 1 */}
-        <div className="w-[850px] h-[850px] rounded-full border-2 border-royal-200/80 animate-spin-slow relative">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-royal-600 shadow-royal" />
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-royal-500 shadow-royal" />
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-royal-700 shadow-royal" />
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-royal-600 shadow-royal" />
+        <div className="w-[820px] h-[820px] rounded-full border-2 border-black/40 animate-spin-slow relative">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 bg-black border-2 border-white" />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border-2 border-black" />
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-black border-2 border-white" />
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-black" />
         </div>
 
-        {/* Middle Ring 2 */}
-        <div className="absolute w-[620px] h-[620px] rounded-full border-2 border-dashed border-royal-400/60 animate-spin-reverse-slow">
-          <div className="absolute top-1/4 left-1/4 w-3 h-3 rounded-full bg-royal-400" />
-          <div className="absolute bottom-1/4 right-1/4 w-3 h-3 rounded-full bg-royal-600" />
+        <div className="absolute w-[600px] h-[600px] rounded-full border-2 border-dashed border-white/70 animate-spin-reverse-slow">
+          <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-black" />
+          <div className="absolute bottom-1/4 right-1/4 w-3 h-3 bg-white" />
         </div>
 
-        {/* Inner Ring 3 */}
-        <div className="absolute w-[420px] h-[420px] rounded-full border-2 border-royal-300/60 animate-spin-slow opacity-80" />
+        <div className="absolute w-[400px] h-[400px] rounded-full border-2 border-black/50 animate-spin-slow" />
       </div>
 
       <div className="max-w-6xl mx-auto relative z-10 text-center">
         {/* Header Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-royal-600 text-white font-bold text-xs mb-4 shadow-royal animate-pulse-glow">
-          <Zap className="w-4 h-4" />
-          360° Royal Blue Cyber-Orbital Research Matrix
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-black text-white font-bold text-xs uppercase tracking-widest border border-white mb-4 shadow-[2px_2px_0px_0px_#FFFFFF]">
+          <Zap className="w-3.5 h-3.5" />
+          360° Academic Matrix Exploration
         </div>
 
-        <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
-          Interactive <span className="text-royal-gradient">Academic Orbital Matrix</span>
+        <h2 className="font-chiseled text-3xl md:text-5xl text-black tracking-tight mb-2 uppercase">
+          PERIPHERAL EVIDENCE MATRIX
         </h2>
 
-        <p className="text-sm md:text-base text-slate-600 max-w-2xl mx-auto mb-16 leading-relaxed">
-          Watch the papers rotate along 360-degree laser connection lines. Click on any research paper node to open step-by-step guidance on what you can perform on this platform!
+        <p className="text-xs md:text-sm uppercase font-semibold text-white drop-shadow-[1px_1px_0px_#000000] max-w-2xl mx-auto mb-12 leading-relaxed">
+          Click any evaluated paper node to inspect platform capabilities, extracted limitations, and formulated validation hypotheses.
         </p>
 
-        {/* Central AI Core Node & Radial Grid Showcase */}
-        <div className="relative py-8 flex flex-col items-center">
+        {/* Central Core & Radial Grid Showcase */}
+        <div className="relative py-6 flex flex-col items-center">
           
-          {/* Glowing Center AI Core Node */}
-          <div className="w-20 h-20 rounded-3xl bg-royal-gradient text-white font-black text-xl flex flex-col items-center justify-center shadow-royal-lg border-2 border-royal-400 mb-12 z-20 animate-pulse-glow">
-            <Cpu className="w-8 h-8 text-white mb-0.5" />
-            <span className="text-[10px] tracking-wider uppercase font-bold">RAG Core</span>
+          {/* Center AI Core Node */}
+          <div className="w-20 h-20 bg-black text-white font-chiseled text-xl flex flex-col items-center justify-center border-3 border-white shadow-[6px_6px_0px_0px_#000000] mb-12 z-20">
+            <Cpu className="w-7 h-7 text-white mb-0.5" />
+            <span className="text-[9px] tracking-widest uppercase font-bold">RAG CORE</span>
           </div>
 
-          {/* SVG Connecting Laser Grid Lines */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none z-10 hidden md:block">
-            <line x1="50%" y1="120" x2="20%" y2="280" stroke="#2563EB" strokeWidth="2" className="laser-line" />
-            <line x1="50%" y1="120" x2="50%" y2="280" stroke="#2563EB" strokeWidth="2" className="laser-line" />
-            <line x1="50%" y1="120" x2="80%" y2="280" stroke="#2563EB" strokeWidth="2" className="laser-line" />
-          </svg>
-
-          {/* Interactive Paper Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl z-20">
-            {showcasePapers.map((paper, idx) => (
+          {/* Paper Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl z-20">
+            {showcasePapers.map((paper) => (
               <div
                 key={paper.id}
                 onClick={() => setSelectedPaper(paper)}
-                className="glass-royal-card p-6 rounded-3xl cursor-pointer text-left transition-all duration-300 relative group border-2 border-royal-200 hover:border-royal-600 bg-white shadow-xl"
+                className="p-6 bg-white border-2 border-black shadow-[6px_6px_0px_0px_#000000] hover:shadow-[8px_8px_0px_0px_#000000] hover:-translate-x-0.5 hover:-translate-y-0.5 cursor-pointer text-left transition-all duration-150 relative group"
               >
-                {/* Connection Node Dot */}
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-royal-600 border-2 border-white flex items-center justify-center shadow-royal">
-                  <div className="w-2 h-2 rounded-full bg-white animate-ping" />
+                {/* Node Marker Dot */}
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-black border-2 border-white flex items-center justify-center">
+                  <div className="w-2 h-2 bg-white" />
                 </div>
 
-                <div className="flex items-center justify-between mb-3 mt-2">
-                  <span className="px-3 py-1 rounded-full bg-royal-100 text-royal-700 font-bold text-[11px] group-hover:bg-royal-600 group-hover:text-white transition">
+                <div className="flex items-center justify-between mb-3 mt-1">
+                  <span className="px-2 py-0.5 bg-black text-white font-bold text-[10px] uppercase tracking-wider">
                     {paper.category}
                   </span>
-                  <span className="text-xs font-semibold text-slate-400">{paper.year}</span>
+                  <span className="text-xs font-bold text-black font-mono">{paper.year}</span>
                 </div>
 
-                <h3 className="text-base font-bold text-slate-900 mb-2 group-hover:text-royal-600 transition leading-snug">
+                <h3 className="font-extrabold text-sm uppercase text-black mb-2 leading-tight">
                   {paper.title}
                 </h3>
 
-                <p className="text-xs text-slate-500 mb-4 line-clamp-2 leading-relaxed">
+                <p className="text-xs text-slate-700 mb-4 line-clamp-3 leading-relaxed uppercase">
                   {paper.abstract}
                 </p>
 
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-royal-600 group-hover:translate-x-1 transition">
-                  <span>Click for Platform Guidance</span>
-                  <ArrowRight className="w-4 h-4" />
+                <div className="pt-3 border-t-2 border-black flex items-center justify-between text-xs font-bold text-black uppercase tracking-wider">
+                  <span>Inspect Methodology</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
                 </div>
               </div>
             ))}
@@ -188,39 +177,43 @@ export default function PaperOrbitalShowcase() {
 
       {/* Interactive Paper Guidance Modal */}
       {selectedPaper && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-3xl w-full p-8 shadow-2xl border-2 border-royal-400 max-h-[90vh] overflow-y-auto relative">
+        <div className="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
+          <div className="bg-white border-3 border-black p-8 shadow-[12px_12px_0px_0px_#000000] max-w-3xl w-full max-h-[90vh] overflow-y-auto relative">
             {/* Close Button */}
             <button
               onClick={() => setSelectedPaper(null)}
-              className="absolute top-6 right-6 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition"
+              className="absolute top-6 right-6 p-2 bg-black text-white hover:bg-slate-800 transition border border-white"
             >
               <X className="w-5 h-5" />
             </button>
 
             {/* Header */}
-            <div className="flex items-center gap-2 mb-3">
-              <span className="px-3 py-1 rounded-full bg-royal-600 text-white font-bold text-xs">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="px-2.5 py-0.5 bg-black text-white font-bold text-xs uppercase">
                 {selectedPaper.category}
               </span>
-              <span className="text-xs font-semibold text-slate-500">• {selectedPaper.venue} ({selectedPaper.year})</span>
+              <span className="text-xs font-bold uppercase text-slate-700 font-mono">
+                // {selectedPaper.venue} ({selectedPaper.year})
+              </span>
             </div>
 
-            <h2 className="text-2xl font-extrabold text-slate-900 mb-2 leading-tight">
+            <h2 className="font-chiseled text-xl md:text-2xl text-black mb-1 uppercase leading-tight">
               {selectedPaper.title}
             </h2>
-            <p className="text-xs text-slate-500 mb-6">Authors: {selectedPaper.authors.join(", ")}</p>
+            <p className="text-xs font-bold uppercase text-slate-600 mb-6 font-mono">
+              Authors: {selectedPaper.authors.join(", ")}
+            </p>
 
-            {/* Guidance Content */}
-            <div className="space-y-6">
-              <div className="p-5 rounded-2xl bg-royal-50/80 border border-royal-200">
-                <h4 className="text-xs font-bold text-royal-800 uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <Cpu className="w-4 h-4 text-royal-600" /> What You Can Do with this Paper on the Platform:
+            {/* Content Blocks */}
+            <div className="space-y-4">
+              <div className="p-5 bg-[#F4F5F6] border-2 border-black">
+                <h4 className="text-xs font-extrabold text-black uppercase tracking-wider mb-2 flex items-center gap-2">
+                  <Cpu className="w-4 h-4 text-black" /> Platform Execution Capabilities:
                 </h4>
-                <ul className="space-y-2 text-xs text-slate-700 font-medium">
+                <ul className="space-y-1.5 text-xs text-black uppercase font-medium">
                   {selectedPaper.platformActions.map((action, i) => (
                     <li key={i} className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-royal-600 flex-shrink-0 mt-0.5" />
+                      <span className="font-bold text-black">•</span>
                       <span>{action}</span>
                     </li>
                   ))}
@@ -228,36 +221,38 @@ export default function PaperOrbitalShowcase() {
               </div>
 
               {/* Research Gap Insight */}
-              <div className="p-5 rounded-2xl bg-amber-50/80 border border-amber-200 text-xs">
-                <h4 className="text-xs font-bold text-amber-900 uppercase tracking-wider mb-1 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-600" /> Extracted Candidate Research Gap:
-                </h4>
-                <p className="text-slate-800 font-semibold mb-3">{selectedPaper.gapInsight}</p>
+              <div className="p-5 bg-black text-white border-2 border-black text-xs space-y-3">
+                <div>
+                  <h4 className="text-xs font-extrabold uppercase text-white tracking-wider mb-1 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-white" /> Extracted Candidate Research Gap:
+                  </h4>
+                  <p className="text-slate-300 font-semibold uppercase">{selectedPaper.gapInsight}</p>
+                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3 border-t border-amber-200/60">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3 border-t border-slate-700">
                   <div>
-                    <span className="font-bold text-amber-950 block mb-0.5">Proposed Research Question:</span>
-                    <p className="text-slate-700 italic">"{selectedPaper.suggestedQuestion}"</p>
+                    <span className="font-bold text-white block mb-0.5 uppercase">Proposed Research Question:</span>
+                    <p className="text-slate-300 italic">"{selectedPaper.suggestedQuestion}"</p>
                   </div>
                   <div>
-                    <span className="font-bold text-amber-950 block mb-0.5">Suggested Validation Experiment:</span>
-                    <p className="text-slate-700">{selectedPaper.suggestedExperiment}</p>
+                    <span className="font-bold text-white block mb-0.5 uppercase">Suggested Validation Experiment:</span>
+                    <p className="text-slate-300">{selectedPaper.suggestedExperiment}</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Modal Footer Action */}
-            <div className="mt-8 pt-6 border-t border-slate-200 flex items-center justify-between">
-              <span className="text-xs text-slate-500 font-medium">
+            {/* Footer Action */}
+            <div className="mt-6 pt-4 border-t-2 border-black flex flex-col sm:flex-row items-center justify-between gap-3">
+              <span className="text-[11px] font-mono uppercase text-slate-600">
                 PyMuPDF section extraction & BGE embedding ready.
               </span>
 
               <Link
                 href="/dashboard"
-                className="px-6 py-3 bg-royal-gradient text-white font-bold text-xs rounded-xl shadow-royal hover:opacity-95 transition flex items-center gap-2"
+                className="px-6 py-3 bg-black hover:bg-white text-white hover:text-black font-extrabold text-xs uppercase tracking-wider border-2 border-black shadow-[4px_4px_0px_0px_#8C8C8C] transition flex items-center gap-2"
               >
-                Try this Paper in Workspace <ArrowRight className="w-4 h-4" />
+                Open in Workspace <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           </div>

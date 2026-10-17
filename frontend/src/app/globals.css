@@ -1,106 +1,172 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&family=Foldit:wght@700;900&family=Nova+Cut&family=Bebas+Neue&family=Inter:wght@400;600;700;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #FAFAFC;
-  --foreground: #0F172A;
+  --background: #8C8C8C;
+  --foreground: #000000;
+  --concrete: #8C8C8C;
+  --concrete-dark: #1E2023;
+  --concrete-light: #E0E2E5;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
   overflow-x: hidden;
 }
 
-/* Glassmorphism Cards */
+/* -------------------------------------------------------------
+ * MOME CENTRAL EUROPEAN BRUTALIST POSTER STYLING
+ * (Exact palette: #8C8C8C Concrete Gray, Pure White, Pure Black)
+ * ------------------------------------------------------------- */
+
+/* Faceted / Paper-cut display typography like in the reference poster */
+.font-chiseled {
+  font-family: 'Foldit', 'Nova Cut', 'Syne', sans-serif;
+  text-transform: uppercase;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.font-editorial-grotesk {
+  font-family: 'Space Grotesk', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+
+/* Sharp Brutalist Surface Cards */
+.brutalist-card-white {
+  background: #FFFFFF;
+  color: #000000;
+  border: 2.5px solid #000000;
+  box-shadow: 6px 6px 0px 0px #000000;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.brutalist-card-white:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0px 0px #000000;
+}
+
+.brutalist-card-black {
+  background: #000000;
+  color: #FFFFFF;
+  border: 2.5px solid #FFFFFF;
+  box-shadow: 6px 6px 0px 0px #FFFFFF;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.brutalist-card-black:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0px 0px #FFFFFF;
+}
+
+.brutalist-card-concrete {
+  background: #7D8187;
+  color: #000000;
+  border: 2.5px solid #000000;
+  box-shadow: 5px 5px 0px 0px #000000;
+}
+
+/* Interactive Brutalist Buttons */
+.brutalist-btn-black {
+  background: #000000;
+  color: #FFFFFF;
+  border: 2.5px solid #000000;
+  box-shadow: 4px 4px 0px 0px #FFFFFF;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: all 0.15s ease;
+}
+
+.brutalist-btn-black:hover {
+  background: #FFFFFF;
+  color: #000000;
+  box-shadow: 6px 6px 0px 0px #000000;
+  transform: translate(-2px, -2px);
+}
+
+.brutalist-btn-white {
+  background: #FFFFFF;
+  color: #000000;
+  border: 2.5px solid #000000;
+  box-shadow: 4px 4px 0px 0px #000000;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: all 0.15s ease;
+}
+
+.brutalist-btn-white:hover {
+  background: #000000;
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+  box-shadow: 6px 6px 0px 0px #FFFFFF;
+  transform: translate(-2px, -2px);
+}
+
+/* Brutalist Architectural Badges */
+.brutalist-tag {
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid currentColor;
+  padding: 0.25rem 0.65rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Preserved workspace card classes mapped to brutalist concrete */
 .glass-royal-card {
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(16px);
-  border: 1px solid #E2E8F0;
-  box-shadow: 0 4px 25px -4px rgba(37, 99, 235, 0.1);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #FFFFFF;
+  border: 2px solid #000000;
+  box-shadow: 5px 5px 0px 0px #000000;
+  transition: all 0.2s ease;
 }
 
 .glass-royal-card:hover {
-  border-color: #2563EB;
-  box-shadow: 0 14px 40px -6px rgba(37, 99, 235, 0.22);
-  transform: translateY(-4px);
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0px 0px #000000;
 }
 
 .glass-royal-sidebar {
-  background: #0F172A;
+  background: #181A1D;
   color: #FFFFFF;
+  border-right: 2px solid #000000;
 }
 
 .bg-royal-gradient {
-  background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 50%, #2563EB 100%);
+  background: #000000;
 }
 
 .bg-royal-pill {
-  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+  background: #000000;
 }
 
 .text-royal-gradient {
-  background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 40%, #2563EB 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #000000;
 }
 
-/* 360-Degree Orbital & Cyber Ring Animations */
-@keyframes orbit-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes orbit-spin-reverse {
-  0% { transform: rotate(360deg); }
-  100% { transform: rotate(0deg); }
-}
-
-@keyframes pulse-glow {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.05); }
-}
-
-@keyframes laser-dash {
-  to {
-    stroke-dashoffset: -40;
-  }
-}
-
-.animate-spin-slow {
-  animation: orbit-spin 30s linear infinite;
-}
-
-.animate-spin-reverse-slow {
-  animation: orbit-spin-reverse 35s linear infinite;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 3s ease-in-out infinite;
-}
-
-.laser-line {
-  stroke-dasharray: 8 8;
-  animation: laser-dash 1.5s linear infinite;
-}
-
-/* Custom scrollbars */
+/* Custom Brutalist scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #F1F5F9;
+  background: #8C8C8C;
+  border-left: 2px solid #000000;
 }
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
-  border-radius: 9999px;
+  background: #000000;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #2563EB;
+  background: #FFFFFF;
+  border: 2px solid #000000;
 }

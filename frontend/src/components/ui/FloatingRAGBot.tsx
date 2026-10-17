@@ -96,17 +96,16 @@ export default function FloatingRAGBot() {
         {!isOpen && (
           <button
             onClick={() => setIsOpen(true)}
-            className="group px-4 py-3 rounded-full bg-royal-gradient text-white font-bold text-xs shadow-2xl hover:scale-105 transition-all duration-300 flex items-center gap-3 border-2 border-royal-400"
+            className="px-4 py-3 bg-black hover:bg-white text-white hover:text-black border-2 border-white shadow-[4px_4px_0px_0px_#FFFFFF] transition-all duration-150 flex items-center gap-3 font-grotesk font-extrabold text-xs uppercase"
           >
             <div className="relative">
-              <div className="w-8 h-8 rounded-full bg-royal-600 flex items-center justify-center text-white">
-                <Bot className="w-5 h-5 animate-pulse" />
+              <div className="w-7 h-7 bg-white text-black flex items-center justify-center">
+                <Bot className="w-4 h-4 text-black" />
               </div>
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full border-2 border-slate-900 animate-ping" />
             </div>
             <div className="text-left hidden sm:block">
-              <p className="font-extrabold text-white text-xs leading-none">RAG AI Bot</p>
-              <p className="text-[10px] text-royal-300 mt-0.5">Ask Academic Questions</p>
+              <p className="font-extrabold text-xs leading-none">RAG AI BOT</p>
+              <p className="text-[9px] text-slate-300 font-mono mt-0.5">ASK ACADEMIC QUESTIONS</p>
             </div>
           </button>
         )}
@@ -114,69 +113,69 @@ export default function FloatingRAGBot() {
 
       {/* Slide-Out RAG Assistant Chatbot Drawer */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-full max-w-md bg-white rounded-3xl shadow-2xl border-2 border-royal-400 overflow-hidden flex flex-col h-[560px] animate-float">
+        <div className="fixed bottom-6 right-6 z-50 w-full max-w-md bg-white border-3 border-black shadow-[10px_10px_0px_0px_#000000] flex flex-col h-[560px] font-grotesk overflow-hidden">
           {/* Header */}
-          <div className="p-4 bg-royal-gradient text-white flex items-center justify-between">
+          <div className="p-4 bg-black text-white border-b-2 border-black flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-royal-600 flex items-center justify-center font-bold text-white shadow-royal">
-                <Bot className="w-5 h-5" />
+              <div className="w-8 h-8 bg-white text-black font-chiseled text-sm flex items-center justify-center font-bold">
+                AI
               </div>
               <div>
-                <h3 className="font-bold text-sm text-white leading-tight">RAG Research Assistant</h3>
-                <p className="text-[10px] text-royal-200">Verifiable Page-Level Citations Enabled</p>
+                <h3 className="font-extrabold text-xs uppercase text-white leading-tight">RAG Research Assistant</h3>
+                <p className="text-[9px] uppercase text-slate-400 font-mono">100% Page Citations Enabled</p>
               </div>
             </div>
 
             <button
               onClick={() => setIsOpen(false)}
-              className="p-1.5 rounded-full hover:bg-royal-800 text-royal-200 hover:text-white transition"
+              className="p-1.5 bg-black text-white hover:bg-slate-800 transition border border-white"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           </div>
 
           {/* Quick Prompts Bar */}
-          <div className="px-3 py-2 bg-royal-offwhite border-b border-slate-200 flex gap-2 overflow-x-auto text-[11px]">
+          <div className="px-3 py-2 bg-[#F4F5F6] border-b-2 border-black flex gap-2 overflow-x-auto text-[10px] font-bold uppercase font-mono">
             {samplePrompts.map((p, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSend(p)}
-                className="px-2.5 py-1 rounded-full bg-white border border-royal-200 text-royal-700 hover:bg-royal-600 hover:text-white font-semibold transition whitespace-nowrap"
+                className="px-2 py-1 bg-white border border-black hover:bg-black hover:text-white transition whitespace-nowrap"
               >
-                {p.substring(0, 28)}...
+                {p.substring(0, 24)}...
               </button>
             ))}
           </div>
 
           {/* Chat Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs bg-canvas">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 text-xs bg-[#E6E7E9]">
             {messages.map((m) => (
               <div
                 key={m.id}
                 className={`flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}
               >
                 <div
-                  className={`p-3.5 rounded-2xl max-w-[85%] leading-relaxed ${
+                  className={`p-3 max-w-[85%] leading-relaxed border-2 border-black ${
                     m.role === "user"
-                      ? "bg-royal-600 text-white rounded-br-none font-medium"
-                      : "bg-white text-slate-800 border border-slate-200 shadow-sm rounded-bl-none"
+                      ? "bg-black text-white shadow-[3px_3px_0px_0px_#FFFFFF]"
+                      : "bg-white text-black shadow-[3px_3px_0px_0px_#000000]"
                   }`}
                 >
-                  <p className="whitespace-pre-line">{m.content}</p>
+                  <p className="whitespace-pre-line text-xs font-medium">{m.content}</p>
 
                   {/* Citations Chip */}
                   {m.citations && m.citations.length > 0 && (
-                    <div className="mt-3 pt-2 border-t border-slate-100 space-y-1">
-                      <span className="text-[10px] font-bold text-royal-700 uppercase flex items-center gap-1">
-                        <ShieldCheck className="w-3 h-3" /> Verifiable Citation:
+                    <div className="mt-2 pt-2 border-t border-black space-y-1">
+                      <span className="text-[9px] font-bold uppercase text-slate-700 block">
+                        Verified Sources:
                       </span>
                       {m.citations.map((c, i) => (
                         <button
                           key={i}
                           onClick={() => setSelectedCitation(c)}
-                          className="w-full text-left p-2 rounded-lg bg-royal-50 border border-royal-200 text-royal-800 font-semibold text-[11px] hover:bg-royal-100 transition"
+                          className="w-full text-left p-1.5 bg-[#F4F5F6] border border-black text-black font-mono text-[10px] hover:bg-black hover:text-white transition"
                         >
-                          📚 {c.title.substring(0, 26)}... (Page {c.page_number})
+                          📚 {c.title.substring(0, 24)}... (p. {c.page_number})
                         </button>
                       ))}
                     </div>
@@ -186,23 +185,23 @@ export default function FloatingRAGBot() {
             ))}
 
             {loading && (
-              <div className="flex items-center gap-2 text-[11px] text-royal-600 font-semibold animate-pulse">
-                <Sparkles className="w-3.5 h-3.5" /> Searching RAG vector store & generating answer...
+              <div className="flex items-center gap-2 text-[11px] text-black font-bold uppercase animate-pulse">
+                <Sparkles className="w-3.5 h-3.5" /> Retrieving grounded evidence...
               </div>
             )}
           </div>
 
           {/* Citation Inspector Sub-card */}
           {selectedCitation && (
-            <div className="p-3 bg-royal-900 text-white text-[11px] border-t border-royal-700 relative">
+            <div className="p-3 bg-black text-white text-[11px] border-t-2 border-black relative">
               <button
                 onClick={() => setSelectedCitation(null)}
-                className="absolute top-2 right-2 text-royal-300 hover:text-white text-[10px] font-bold"
+                className="absolute top-2 right-2 text-slate-300 hover:text-white text-[10px] font-bold uppercase"
               >
                 Close
               </button>
-              <p className="font-bold text-royal-300 mb-0.5">{selectedCitation.title} (p. {selectedCitation.page_number})</p>
-              <p className="text-slate-300 italic">"{selectedCitation.excerpt}"</p>
+              <p className="font-bold text-white mb-0.5 uppercase">{selectedCitation.title} (p. {selectedCitation.page_number})</p>
+              <p className="text-slate-300 italic text-[10px]">"{selectedCitation.excerpt}"</p>
             </div>
           )}
 
@@ -212,21 +211,21 @@ export default function FloatingRAGBot() {
               e.preventDefault();
               handleSend();
             }}
-            className="p-3 bg-white border-t border-slate-200 flex gap-2"
+            className="p-3 bg-white border-t-2 border-black flex gap-2"
           >
             <input
               type="text"
               value={inputMsg}
               onChange={(e) => setInputMsg(e.target.value)}
-              placeholder="Ask RAG Bot a research question..."
-              className="flex-1 px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs outline-none focus:border-royal-600"
+              placeholder="Ask academic RAG bot a question..."
+              className="flex-1 px-3 py-2 bg-[#F4F5F6] border-2 border-black text-xs outline-none text-black font-mono"
             />
             <button
               type="submit"
               disabled={loading}
-              className="px-3 py-2 bg-royal-gradient text-white rounded-xl font-bold hover:opacity-95"
+              className="px-4 py-2 bg-black hover:bg-white text-white hover:text-black border-2 border-black font-extrabold uppercase text-xs transition"
             >
-              <Send className="w-4 h-4" />
+              <Send className="w-3.5 h-3.5" />
             </button>
           </form>
         </div>

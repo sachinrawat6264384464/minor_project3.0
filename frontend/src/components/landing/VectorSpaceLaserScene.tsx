@@ -184,23 +184,7 @@ export default function VectorSpaceLaserScene() {
       {/* Perspective Grid Floor */}
       <div className="absolute inset-x-0 bottom-0 h-[420px] perspective-grid-floor opacity-40 pointer-events-none z-0" />
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        {/* Section Heading */}
-        <div className="text-center max-w-3xl mx-auto mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white text-black text-[11px] font-mono font-bold uppercase tracking-widest rounded-full mb-3 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
-            <Target className="w-3.5 h-3.5" />
-            3D VECTOR SPACE & NEAREST CHUNKS
-          </div>
-
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-white leading-tight">
-            HOW <span className="underline decoration-white decoration-4 underline-offset-8">VECTOR DB</span> MATCHES YOUR QUESTION
-          </h2>
-
-          <p className="text-slate-400 text-xs sm:text-sm mt-3">
-            Dense 384-dimensional embeddings form semantic clusters. Watch the glowing question node shoot laser connections to the exact 3 nearest chunk neighbors in our Neon pgvector store.
-          </p>
-        </div>
-
+      <div className="max-w-6xl mx-auto relative z-10 pt-4">
         {/* Preset Query Switcher Pills */}
         <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
           {PRESET_QUERIES.map((preset, idx) => (
@@ -265,26 +249,93 @@ export default function VectorSpaceLaserScene() {
           {/* Perspective Grid Floor at bottom */}
           <div className="absolute inset-x-0 bottom-0 h-[260px] perspective-grid-floor-dense opacity-45 pointer-events-none" />
 
-          {/* 3D WIREFRAME VECTOR DB CYLINDER (Exact Match from User's Reference Screenshot) */}
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center pointer-events-none">
-            {/* Cylinder Top Ellipse */}
-            <div className="relative w-48 h-20 border-2 border-white rounded-[50%] bg-black/80 flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.3)]">
-              {/* Cylinder Middle Ring */}
-              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-10 border-b border-white/40 rounded-[50%]" />
-              
-              {/* Cylinder Label */}
-              <div className="text-center z-10 pt-1">
-                <span className="text-sm font-black tracking-wider text-white font-sans uppercase block drop-shadow-[0_0_8px_#ffffff]">
-                  Vector DB
-                </span>
-                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest block">
-                  pgvector · 384-dim
+          {/* 3D WIREFRAME VECTOR DB CYLINDER (Precision 3D Mathematical SVG Architecture) */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center pointer-events-none select-none">
+            <div className="relative w-64 h-28 flex items-center justify-center">
+              <svg 
+                className="absolute inset-0 w-full h-full overflow-visible"
+                viewBox="0 0 256 112"
+                fill="none"
+              >
+                <defs>
+                  <linearGradient id="vdbTopGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#1a1a1a" />
+                    <stop offset="50%" stopColor="#080808" />
+                    <stop offset="100%" stopColor="#000000" />
+                  </linearGradient>
+
+                  <linearGradient id="vdbBodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#222222" />
+                    <stop offset="100%" stopColor="#050505" />
+                  </linearGradient>
+
+                  <filter id="vdbGlow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#ffffff" floodOpacity="0.45" />
+                  </filter>
+                </defs>
+
+                {/* Base Glow Aura */}
+                <ellipse cx="128" cy="88" rx="116" ry="20" fill="rgba(255,255,255,0.06)" />
+
+                {/* Cylinder Side Wall (Connected seamlessly from top rim to bottom rim) */}
+                <path
+                  d="M 12 36 
+                     A 116 24 0 0 0 244 36 
+                     L 244 76 
+                     A 116 24 0 0 1 12 76 
+                     Z"
+                  fill="url(#vdbBodyGrad)"
+                  stroke="#ffffff"
+                  strokeWidth="1.8"
+                />
+
+                {/* Intermediate HNSW Index Layer Ring */}
+                <path
+                  d="M 12 56 A 116 24 0 0 0 244 56"
+                  fill="none"
+                  stroke="rgba(255, 255, 255, 0.4)"
+                  strokeWidth="1.2"
+                  strokeDasharray="4 4"
+                />
+
+                {/* Cylinder Top Cap Ellipse */}
+                <ellipse
+                  cx="128"
+                  cy="36"
+                  rx="116"
+                  ry="24"
+                  fill="url(#vdbTopGrad)"
+                  stroke="#ffffff"
+                  strokeWidth="2"
+                  filter="url(#vdbGlow)"
+                />
+
+                {/* Inner Concentric Radar Ring on Top Surface */}
+                <ellipse
+                  cx="128"
+                  cy="36"
+                  rx="88"
+                  ry="16"
+                  fill="none"
+                  stroke="rgba(255, 255, 255, 0.25)"
+                  strokeWidth="1"
+                  strokeDasharray="3 3"
+                />
+              </svg>
+
+              {/* Vector DB Center Label */}
+              <div className="relative z-10 text-center pb-6 select-none">
+                <div className="flex items-center justify-center gap-1.5 mb-0.5">
+                  <Database className="w-3.5 h-3.5 text-white animate-pulse" />
+                  <span className="text-sm font-black tracking-widest text-white font-sans uppercase drop-shadow-[0_0_12px_#ffffff]">
+                    VECTOR DB
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-slate-300 uppercase tracking-widest block font-bold">
+                  PGVECTOR · 384-DIM
                 </span>
               </div>
             </div>
-
-            {/* Cylinder Bottom Wall Rings */}
-            <div className="w-48 h-10 border-x-2 border-b-2 border-white rounded-b-[50%] -mt-9 bg-black/60 pointer-events-none" />
           </div>
 
           {/* SVG LASER BEAMS & TARGET LINES (Matching Reference Image 5) */}

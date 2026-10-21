@@ -240,34 +240,43 @@ export default function LandingPage() {
       </section>
 
       {/* =========================================================================
-       * FOOTER: MINIMAL OBSIDIAN ARCHITECTURE WITH GRAND HEADLINE
+       * FOOTER: MINIMAL OBSIDIAN ARCHITECTURE WITH GRAND HEADLINE & BRANDING
        * ========================================================================= */}
       <footer className="border-t border-white/15 bg-black pt-20 pb-12 px-6 md:px-12 text-slate-400 text-xs font-mono relative">
         {/* Grand Architecture Question Headline (Moved to Footer in Big Bold Size) */}
-        <div className="max-w-5xl mx-auto text-center mb-20">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-white text-black text-[11px] font-mono font-bold uppercase tracking-widest rounded-full mb-6 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
+        <div className="max-w-5xl mx-auto text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-white text-black text-[11px] font-mono font-bold uppercase tracking-widest rounded-full mb-5 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
             <Sparkles className="w-3.5 h-3.5" />
-            360° ARCHITECTURE // RESEARCH GAP DISCOVERY
+            AI RESEARCH GAP FINDER // ARCHITECTURE
           </div>
 
-          <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-tight text-white font-sans mb-6 leading-[1.05]">
-            WHAT IS <span className="underline decoration-white decoration-4 sm:decoration-8 underline-offset-8">RAG</span>, AND HOW DOES IT WORK <span className="underline decoration-white decoration-4 sm:decoration-8 underline-offset-8">INTERNALLY</span>?
+          <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-tight text-white font-sans mb-4 leading-[1.05]">
+            RESEARCH GAP FINDER
           </h2>
 
+          <p className="text-xl sm:text-3xl font-extrabold uppercase tracking-wide text-slate-200 mb-6">
+            WHAT IS <span className="underline decoration-white decoration-4 sm:decoration-8 underline-offset-8">RAG</span>, AND HOW DOES IT WORK <span className="underline decoration-white decoration-4 sm:decoration-8 underline-offset-8">INTERNALLY</span>?
+          </p>
+
           <p className="text-slate-400 text-sm sm:text-base md:text-lg max-w-3xl mx-auto font-sans leading-relaxed">
-            Explain it with verifiable 3D indexed documents. Our architecture coordinates PyMuPDF structural parsing, 384-dimensional BGE vector embeddings, BM25Okapi lexical retrieval, and automated 9-stage research gap discovery.
+            Automated research gap discovery powered by verifiable 3D indexed documents, PyMuPDF structural parsing, 384-dimensional BGE vector embeddings, BM25Okapi lexical retrieval, and counter-evidence limitation synthesis.
           </p>
         </div>
 
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-10 pt-10 border-t border-white/10">
           <div>
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-7 h-7 rounded bg-white text-black font-black text-xs flex items-center justify-center">
+            <div className="flex items-center gap-2.5 mb-3">
+              <div className="w-7 h-7 rounded bg-white text-black font-black text-xs flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.7)]">
                 AI
               </div>
-              <span className="text-sm font-bold text-white uppercase font-sans tracking-tight">
-                ResearchGap.ai
-              </span>
+              <div>
+                <span className="text-sm font-black text-white uppercase font-sans tracking-tight block leading-tight">
+                  ResearchGap<span className="text-slate-400">.ai</span>
+                </span>
+                <span className="text-[10px] font-mono text-slate-300 font-semibold tracking-wider uppercase block">
+                  Research Gap Finder
+                </span>
+              </div>
             </div>
             <p className="text-[11px] leading-relaxed text-slate-500">
               Enterprise-grade academic literature synthesis, multi-strategy hybrid RAG, and automated 9-stage research gap discovery.
@@ -318,6 +327,13 @@ export default function LandingPage() {
           <div>
             Full-Stack Next.js 15 · FastAPI · Neon pgvector Architecture
           </div>
+        </div>
+
+        {/* Massive Watermark / Brand Banner at Bottom of Footer */}
+        <div className="pt-14 pb-2 text-center overflow-hidden pointer-events-none select-none border-t border-white/5 mt-10">
+          <span className="text-3xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white/20 via-white/5 to-transparent font-sans block">
+            RESEARCH GAP FINDER
+          </span>
         </div>
       </footer>
     </div>

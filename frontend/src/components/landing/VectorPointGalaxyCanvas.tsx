@@ -37,6 +37,15 @@ interface OrbitingHaloParticle {
   twinkleOffset: number;
 }
 
+interface StaticStar {
+  x: number;
+  y: number;
+  size: number;
+  baseAlpha: number;
+  twinkleSpeed: number;
+  twinkleOffset: number;
+}
+
 export default function VectorPointGalaxyCanvas({
   interactive = true,
   className = "",
@@ -151,10 +160,25 @@ export default function VectorPointGalaxyCanvas({
 
     const particles: Particle[] = [];
     const orbitingHaloParticles: OrbitingHaloParticle[] = [];
+    const staticStars: StaticStar[] = [];
 
     const initSystem = () => {
       particles.length = 0;
       orbitingHaloParticles.length = 0;
+      staticStars.length = 0;
+
+      // 0. Cosmic Static Background Stars ("background me bhi to static rakh")
+      const STATIC_STAR_COUNT = 90;
+      for (let i = 0; i < STATIC_STAR_COUNT; i++) {
+        staticStars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          size: Math.random() * 0.7 + 0.6,
+          baseAlpha: Math.random() * 0.4 + 0.25,
+          twinkleSpeed: Math.random() * 1.5 + 0.8,
+          twinkleOffset: Math.random() * Math.PI * 2,
+        });
+      }
 
       const fontSize = Math.min(width * 0.30, Math.min(height * 0.70, 330));
       const { borderPoints, interiorPoints } = generateGrandRAGPoints(width, height);
@@ -199,57 +223,56 @@ export default function VectorPointGalaxyCanvas({
         });
       }
 
-      // 2. Extra Orbiting Halo Particles ("eske banne ke baad points jo around ghoomte rahe, group me gather kar, solid type me, quantity bada de")
-      const HALO_COUNT = 520;
+      // 2. Extra Orbiting Halo Particles ("group me thode kam kar, space ko badha, close hai bahut RAG ke")
+      const HALO_COUNT = 140;
       const letterSpacing = fontSize * 0.84;
       const xR = -letterSpacing;
       const xA = 0;
       const xG = letterSpacing;
 
       for (let i = 0; i < HALO_COUNT; i++) {
-        // Group into 4 gathered swarms: Cluster R, Cluster A, Cluster G, and connecting ribbon
         const hubSelector = i % 4;
         let hubX = 0;
         let radiusX = 0;
         let radiusY = 0;
-        let zAmplitude = 90;
+        let zAmplitude = 110;
 
         if (hubSelector === 0) {
-          // Group 1: Gathered tightly around letter 'R'
+          // Group 1: Wide orbit around letter 'R'
           hubX = xR;
-          radiusX = fontSize * (0.22 + Math.random() * 0.18);
-          radiusY = fontSize * (0.24 + Math.random() * 0.20);
-          zAmplitude = 100;
+          radiusX = fontSize * (0.45 + Math.random() * 0.35);
+          radiusY = fontSize * (0.48 + Math.random() * 0.35);
+          zAmplitude = 120;
         } else if (hubSelector === 1) {
-          // Group 2: Gathered tightly around letter 'A'
+          // Group 2: Wide orbit around letter 'A'
           hubX = xA;
-          radiusX = fontSize * (0.20 + Math.random() * 0.16);
-          radiusY = fontSize * (0.22 + Math.random() * 0.18);
-          zAmplitude = 80;
-        } else if (hubSelector === 2) {
-          // Group 3: Gathered tightly around letter 'G'
-          hubX = xG;
-          radiusX = fontSize * (0.22 + Math.random() * 0.18);
-          radiusY = fontSize * (0.24 + Math.random() * 0.20);
+          radiusX = fontSize * (0.40 + Math.random() * 0.30);
+          radiusY = fontSize * (0.44 + Math.random() * 0.32);
           zAmplitude = 100;
+        } else if (hubSelector === 2) {
+          // Group 3: Wide orbit around letter 'G'
+          hubX = xG;
+          radiusX = fontSize * (0.45 + Math.random() * 0.35);
+          radiusY = fontSize * (0.48 + Math.random() * 0.35);
+          zAmplitude = 120;
         } else {
-          // Group 4: Dynamic ribbon looping across the entire word RAG
+          // Group 4: Majestic outer envelope hugging R-A-G with broad spacing
           hubX = 0;
-          radiusX = letterSpacing * 1.30 + (Math.random() - 0.5) * 35;
-          radiusY = fontSize * 0.48 + (Math.random() - 0.5) * 25;
-          zAmplitude = 130;
+          radiusX = letterSpacing * 1.80 + (Math.random() - 0.5) * 60;
+          radiusY = fontSize * 0.82 + (Math.random() - 0.5) * 40;
+          zAmplitude = 150;
         }
 
         orbitingHaloParticles.push({
           angle: Math.random() * Math.PI * 2,
-          speed: (Math.random() * 0.014 + 0.007) * (Math.random() > 0.4 ? 1 : -1),
+          speed: (Math.random() * 0.012 + 0.005) * (Math.random() > 0.4 ? 1 : -1),
           radiusX,
           radiusY,
           hubX,
           hubY: 0,
           inclineAngle: (Math.random() - 0.5) * 0.7, // 3D orbital tilt
           zAmplitude,
-          size: Math.random() * 0.8 + 1.8, // Solid, punchy visible size
+          size: Math.random() * 0.8 + 1.4, // Solid, clean stardust dots
           alpha: 1.0, // Solid type opacity
           twinkleSpeed: Math.random() * 2 + 1,
           twinkleOffset: Math.random() * Math.PI * 2,
@@ -345,6 +368,16 @@ export default function VectorPointGalaxyCanvas({
         } catch {
           // Guard canvas coordinates
         }
+      }
+
+      // 0. RENDER BACKGROUND COSMIC STATIC STARS ("background me bhi to static rakh")
+      for (let i = 0; i < staticStars.length; i++) {
+        const star = staticStars[i];
+        const twinkle = Math.sin(globalTimer * star.twinkleSpeed + star.twinkleOffset) * 0.25 + 0.75;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.baseAlpha * twinkle})`;
+        ctx.fill();
       }
 
       const torchLitParticles: { x: number; y: number }[] = [];

@@ -326,31 +326,6 @@ export default function CylinderOrbitalShowcase3D() {
         </div>
       </div>
 
-      {/* Floating Active Card Inspector Bar */}
-      <div className="relative z-20 max-w-3xl mx-auto mt-4 p-4 rounded-xl bg-black/90 border border-white/20 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-left">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-mono uppercase text-slate-400">Selected Paper Node:</span>
-            <span className="px-2 py-0.5 text-[10px] font-bold bg-white text-black rounded font-mono">
-              {activeDoc ? activeDoc.venue : "HOVER ANY PAPER"}
-            </span>
-          </div>
-          <p className="text-xs text-white font-sans font-medium line-clamp-1">
-            {activeDoc ? activeDoc.title : "Hover or click on any 3D wireframe paper in the cylinder orbit above to preview full RAG chunks."}
-          </p>
-        </div>
-
-        <button
-          onClick={() => {
-            if (activeDoc) setSelectedDocForModal(activeDoc);
-            else setSelectedDocForModal(ACADEMIC_DOCS[0]);
-          }}
-          className="px-4 py-2 bg-white hover:bg-slate-200 text-black font-bold text-xs font-mono uppercase tracking-wider rounded-lg transition flex items-center gap-2 shadow-[0_0_15px_rgba(255,255,255,0.4)] whitespace-nowrap"
-        >
-          Inspect Ingestion Details <ArrowRight className="w-3.5 h-3.5" />
-        </button>
-      </div>
-
       {/* Interactive Modal for Selected Paper */}
       <AnimatePresence>
         {selectedDocForModal && (

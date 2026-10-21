@@ -5,16 +5,13 @@
 @tailwind utilities;
 
 :root {
-  --background: #8C8C8C;
-  --foreground: #000000;
-  --concrete: #8C8C8C;
-  --concrete-dark: #1E2023;
-  --concrete-light: #E0E2E5;
+  --background: #000000;
+  --foreground: #FFFFFF;
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: #000000;
+  color: #FFFFFF;
   font-family: 'Space Grotesk', 'Inter', sans-serif;
   overflow-x: hidden;
 }
@@ -160,13 +157,102 @@ body {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #8C8C8C;
-  border-left: 2px solid #000000;
+  background: #0A0A0A;
+  border-left: 1px solid #222222;
 }
 ::-webkit-scrollbar-thumb {
-  background: #000000;
+  background: #333333;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #FFFFFF;
-  border: 2px solid #000000;
+}
+
+/* -------------------------------------------------------------
+ * 3D PERSPECTIVE GRID FLOOR & COSMIC VECTOR SPACE UTILITIES
+ * ------------------------------------------------------------- */
+.perspective-stage {
+  perspective: 1200px;
+  perspective-origin: 50% 30%;
+  transform-style: preserve-3d;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.perspective-grid-floor {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+  background-size: 40px 40px;
+  transform: rotateX(68deg);
+  transform-origin: center bottom;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 50%, black 20%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 50%, black 20%, transparent 80%);
+}
+
+.perspective-grid-floor-dense {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+  transform: rotateX(72deg);
+  transform-origin: center bottom;
+  mask-image: radial-gradient(ellipse 95% 75% at 50% 50%, black 15%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse 95% 75% at 50% 50%, black 15%, transparent 85%);
+}
+
+/* Laser Beam Animation */
+@keyframes laserDashAnim {
+  from {
+    stroke-dashoffset: 60;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.laser-beam {
+  stroke-dasharray: 6 5;
+  animation: laserDashAnim 1.2s linear infinite;
+}
+
+.laser-beam-fast {
+  stroke-dasharray: 4 4;
+  animation: laserDashAnim 0.8s linear infinite;
+}
+
+/* Pulsing Concentric Rings */
+@keyframes pulseTargetRing {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.animate-target-pulse {
+  animation: pulseTargetRing 2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+/* Glow diamond pulse */
+@keyframes diamondGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 24px rgba(255, 255, 255, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 1)) drop-shadow(0 0 40px rgba(255, 255, 255, 0.8));
+  }
+}
+
+.glow-diamond-pulse {
+  animation: diamondGlow 2.5s ease-in-out infinite;
 }

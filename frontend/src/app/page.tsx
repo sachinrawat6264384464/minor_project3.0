@@ -43,49 +43,54 @@ export default function LandingPage() {
       <FloatingRAGBot />
 
       {/* =========================================================================
-       * TOP NAVIGATION HEADER: SLEEK OBSIDIAN GLASS
+       * FLOATING ISLAND NAVBAR: TALLER, CONSTRAINED WIDTH, TOP GAP, LARGER TEXT
        * ========================================================================= */}
-      <header className="sticky top-0 z-50 px-6 md:px-12 py-3.5 bg-black/80 backdrop-blur-md border-b border-white/15 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-white text-black font-black text-sm flex items-center justify-center shadow-[0_0_15px_rgba(255,255,255,0.7)]">
-            AI
+      <div className="sticky top-4 z-50 w-full px-4 sm:px-6 pointer-events-none mb-2">
+        <header className="max-w-6xl mx-auto py-4 sm:py-4.5 px-6 sm:px-8 bg-black/80 backdrop-blur-2xl border border-white/20 rounded-2xl sm:rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.9),0_0_20px_rgba(255,255,255,0.06)] flex items-center justify-between pointer-events-auto transition-all">
+          
+          {/* Logo & Platform Name */}
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-white text-black font-black text-sm flex items-center justify-center shadow-[0_0_18px_rgba(255,255,255,0.8)]">
+              AI
+            </div>
+            <div className="flex items-center gap-2.5">
+              <span className="text-base sm:text-lg font-black tracking-tight uppercase font-sans text-white">
+                ResearchGap<span className="text-slate-400">.ai</span>
+              </span>
+              <span className="hidden md:inline-block px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-widest bg-white/10 text-slate-300 border border-white/20 rounded-full">
+                v3.0 Architecture
+              </span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-base font-extrabold tracking-tight uppercase font-sans text-white">
-              ResearchGap<span className="text-slate-400">.ai</span>
-            </span>
-            <span className="hidden sm:inline-block px-2 py-0.5 text-[9px] font-mono uppercase tracking-widest bg-white/10 text-slate-300 border border-white/20 rounded">
-              v3.0 Architecture
-            </span>
+
+          {/* Center Nav Links - Increased Size */}
+          <nav className="hidden lg:flex items-center gap-7 text-[13px] sm:text-sm font-sans font-medium tracking-wide text-slate-300">
+            <a href="#orbital-papers" className="hover:text-white hover:drop-shadow-[0_0_8px_#ffffff] transition">360° Papers</a>
+            <a href="#how-rag-works" className="hover:text-white hover:drop-shadow-[0_0_8px_#ffffff] transition">R-A-G Formula</a>
+            <a href="#vector-db" className="hover:text-white hover:drop-shadow-[0_0_8px_#ffffff] transition">Vector Space</a>
+            <a href="#architecture-stages" className="hover:text-white hover:drop-shadow-[0_0_8px_#ffffff] transition">9-Stage Flow</a>
+            <Link href="/compare" className="hover:text-white hover:drop-shadow-[0_0_8px_#ffffff] transition">Comparison Matrix</Link>
+            <Link href="/novelty-checker" className="hover:text-white hover:drop-shadow-[0_0_8px_#ffffff] transition">Thesis Novelty</Link>
+          </nav>
+
+          {/* Action Buttons */}
+          <div className="flex items-center gap-3">
+            <Link
+              href="/scholar-studio"
+              className="px-4 py-2 text-xs sm:text-[13px] font-sans font-semibold tracking-wider text-slate-200 hover:text-white border border-white/20 hover:border-white rounded-full transition hidden sm:inline-flex items-center gap-1.5"
+            >
+              <Search className="w-3.5 h-3.5" /> Scholar Studio
+            </Link>
+            <Link
+              href="/dashboard"
+              className="px-5 py-2.5 bg-white hover:bg-slate-200 text-black font-extrabold text-xs sm:text-[13px] font-sans tracking-wider rounded-full transition shadow-[0_0_25px_rgba(255,255,255,0.6)] flex items-center gap-1.5"
+            >
+              Launch Platform <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
-        </div>
 
-        {/* Center Nav Links */}
-        <nav className="hidden lg:flex items-center gap-6 text-xs font-mono uppercase tracking-wider text-slate-300">
-          <a href="#orbital-papers" className="hover:text-white transition">360° Papers</a>
-          <a href="#how-rag-works" className="hover:text-white transition">R-A-G Formula</a>
-          <a href="#vector-db" className="hover:text-white transition">Vector Space</a>
-          <a href="#architecture-stages" className="hover:text-white transition">9-Stage Flow</a>
-          <Link href="/compare" className="hover:text-white transition">Comparison Matrix</Link>
-          <Link href="/novelty-checker" className="hover:text-white transition">Thesis Novelty</Link>
-        </nav>
-
-        {/* Action Buttons */}
-        <div className="flex items-center gap-3">
-          <Link
-            href="/scholar-studio"
-            className="px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-white border border-white/20 hover:border-white rounded-lg transition hidden sm:inline-flex items-center gap-1.5"
-          >
-            <Search className="w-3.5 h-3.5" /> Scholar Studio
-          </Link>
-          <Link
-            href="/dashboard"
-            className="px-4 py-2 bg-white hover:bg-slate-200 text-black font-bold text-xs font-mono uppercase tracking-wider rounded-lg transition shadow-[0_0_20px_rgba(255,255,255,0.5)] flex items-center gap-1.5"
-          >
-            Launch Platform <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-      </header>
+        </header>
+      </div>
 
       {/* =========================================================================
        * HERO SECTION: PURE COSMIC RAG PARTICLE STAGE (Clean, Minimal, Uncluttered)

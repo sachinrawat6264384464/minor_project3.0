@@ -22,6 +22,19 @@ interface Particle {
   spawnThreshold: number;
 }
 
+interface OrbitingHaloParticle {
+  angle: number;
+  speed: number;
+  radiusX: number;
+  radiusY: number;
+  inclineAngle: number;
+  zAmplitude: number;
+  size: number;
+  alpha: number;
+  twinkleSpeed: number;
+  twinkleOffset: number;
+}
+
 export default function VectorPointGalaxyCanvas({
   interactive = true,
   className = "",
@@ -114,13 +127,12 @@ export default function VectorPointGalaxyCanvas({
               !isOpaque(x + step, y + step);
 
             if (isBorder) {
-              // Crisp structural border point
               borderPoints.push({
                 x: x - w / 2,
                 y: y - h / 2,
               });
             } else {
-              // Interior point with anti-scanline jitter for organic cosmic texture
+              // Anti-scanline jitter for organic cosmic texture
               const jx = (Math.random() - 0.5) * 2.2;
               const jy = (Math.random() - 0.5) * 2.2;
               interiorPoints.push({
@@ -136,9 +148,12 @@ export default function VectorPointGalaxyCanvas({
     };
 
     const particles: Particle[] = [];
+    const orbitingHaloParticles: OrbitingHaloParticle[] = [];
 
     const initSystem = () => {
       particles.length = 0;
+      orbitingHaloParticles.length = 0;
+
       const { borderPoints, interiorPoints } = generateGrandRAGPoints(width, height);
       const allTextPoints = [...borderPoints, ...interiorPoints];
       const targetCount = allTextPoints.length;
@@ -146,6 +161,7 @@ export default function VectorPointGalaxyCanvas({
       
       const TOTAL_POINTS = Math.max(2200, targetCount + 250);
 
+      // 1. Text Particles that form R A G
       for (let i = 0; i < TOTAL_POINTS; i++) {
         const initialAngle = Math.random() * Math.PI * 2;
         const initialRadius = Math.random() * (width * 0.65) + 80;
@@ -176,7 +192,6 @@ export default function VectorPointGalaxyCanvas({
           vx: (Math.random() - 0.5) * 0.25,
           vy: (Math.random() - 0.5) * 0.25,
           vz: (Math.random() - 0.5) * 0.15,
-          // Border particles slightly larger and brighter for razor-sharp structural edges
           size: isBorder ? (Math.random() * 0.6 + 1.4) : isAssigned ? (Math.random() * 0.6 + 1.0) : (Math.random() * 0.5 + 0.6),
           alpha: isBorder ? 0.95 : isAssigned ? (Math.random() * 0.25 + 0.7) : 0.3,
           angle: initialAngle,
@@ -185,6 +200,28 @@ export default function VectorPointGalaxyCanvas({
           isTextPoint: isAssigned,
           isBorderPoint: isBorder,
           spawnThreshold,
+        });
+      }
+
+      // 2. Extra Orbiting Halo Particles ("eske banne ke baad kuch points or jo ki around ghoomte rahe")
+      const HALO_COUNT = 190;
+      for (let i = 0; i < HALO_COUNT; i++) {
+        // Diverse orbital bands (some wide, some closer)
+        const bandRatio = (i % 3 === 0) ? 0.44 : (i % 3 === 1) ? 0.52 : 0.62;
+        const radiusX = width * (bandRatio + (Math.random() - 0.5) * 0.12);
+        const radiusY = height * (bandRatio * 0.65 + (Math.random() - 0.5) * 0.10);
+
+        orbitingHaloParticles.push({
+          angle: Math.random() * Math.PI * 2,
+          speed: (Math.random() * 0.010 + 0.004) * (Math.random() > 0.4 ? 1 : -1),
+          radiusX,
+          radiusY,
+          inclineAngle: (Math.random() - 0.5) * 0.65, // Varied 3D orbital tilts
+          zAmplitude: Math.random() * 180 + 80,
+          size: Math.random() * 1.3 + 0.9,
+          alpha: Math.random() * 0.4 + 0.55,
+          twinkleSpeed: Math.random() * 2 + 1,
+          twinkleOffset: Math.random() * Math.PI * 2,
         });
       }
     };
@@ -242,7 +279,7 @@ export default function VectorPointGalaxyCanvas({
         convergenceProgress += 0.009;
       }
       
-      // "Banne ke baad thoda glow dede points ko":
+      // Post-assembly radiant glow ramps up
       if (convergenceProgress >= 0.85 && assemblyGlow < 1) {
         assemblyGlow = Math.min(1, assemblyGlow + 0.025);
       }
@@ -281,10 +318,10 @@ export default function VectorPointGalaxyCanvas({
 
       const torchLitParticles: { x: number; y: number }[] = [];
 
+      // 1. RENDER MAIN R A G TEXT PARTICLES
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
 
-        // Progressive spawn: only particles whose threshold has arrived are rendered
         if (convergenceProgress < p.spawnThreshold) {
           continue;
         }
@@ -303,12 +340,10 @@ export default function VectorPointGalaxyCanvas({
           const targetCurrentY = orbitY * (1 - particleProgress) + p.targetY * particleProgress;
           const targetCurrentZ = p.targetZ * particleProgress;
 
-          // Crisp magnetic snapping to letter coordinates
           p.x += (targetCurrentX - p.x) * 0.13;
           p.y += (targetCurrentY - p.y) * 0.13;
           p.z += (targetCurrentZ - p.z) * 0.13;
 
-          // Gentle shimmer once formed
           if (particleProgress > 0.85) {
             p.x += Math.sin(globalTimer + i * 0.3) * 0.12;
             p.y += Math.cos(globalTimer + i * 0.3) * 0.12;
@@ -355,7 +390,6 @@ export default function VectorPointGalaxyCanvas({
         ctx.beginPath();
         ctx.arc(screenX, screenY, Math.max(0.7, currentSize), 0, Math.PI * 2);
 
-        // "Banne ke baad thoda glow dede points ko":
         // Radiant bloom once formed with breathing pulse
         if (p.isTextPoint && assemblyGlow > 0.1) {
           const pulse = 1 + Math.sin(globalTimer * 2.2 + (p.x * 0.01)) * 0.16;
@@ -375,6 +409,78 @@ export default function VectorPointGalaxyCanvas({
       }
 
       ctx.shadowBlur = 0;
+
+      // 2. RENDER CONTINUOUSLY ORBITING HALO PARTICLES AROUND RAG ("eske banne ke baad points jo around ghoomte rahe")
+      if (convergenceProgress > 0.6) {
+        const haloFade = Math.min(1, (convergenceProgress - 0.6) / 0.3);
+
+        for (let i = 0; i < orbitingHaloParticles.length; i++) {
+          const hp = orbitingHaloParticles[i];
+
+          // Continuous orbital revolution
+          hp.angle += hp.speed;
+
+          // 3D Elliptical position
+          const ox = Math.cos(hp.angle) * hp.radiusX;
+          const oy = Math.sin(hp.angle) * hp.radiusY;
+
+          // 3D Inclined rotation
+          const cosInc = Math.cos(hp.inclineAngle);
+          const sinInc = Math.sin(hp.inclineAngle);
+
+          const rotX = ox * cosInc - oy * sinInc;
+          const rotY = ox * sinInc + oy * cosInc;
+          const rotZ = Math.sin(hp.angle) * hp.zAmplitude;
+
+          // Project to 2D
+          const screenZ = rotZ + 420;
+          if (screenZ <= 15) continue;
+
+          const scale = fov / screenZ;
+          let screenX = width / 2 + rotX * scale + mouseRef.current.tiltX * 0.25;
+          let screenY = height / 2 + rotY * scale + mouseRef.current.tiltY * 0.25;
+
+          if (!Number.isFinite(screenX) || !Number.isFinite(screenY)) continue;
+
+          // Torch effect interaction with orbiting particles
+          let torchBoost = 0;
+          if (isTorchActive) {
+            const dx = screenX - torchX;
+            const dy = screenY - torchY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < torchRadius) {
+              torchBoost = (1 - dist / torchRadius);
+              const pushAngle = Math.atan2(dy, dx);
+              screenX += Math.cos(pushAngle) * (torchBoost * 22);
+              screenY += Math.sin(pushAngle) * (torchBoost * 22);
+              torchLitParticles.push({ x: screenX, y: screenY });
+            }
+          }
+
+          // Depth-based brightness: particles in front of RAG (rotZ > 0) are brighter!
+          const isFront = rotZ > 0;
+          const twinkle = Math.sin(globalTimer * hp.twinkleSpeed + hp.twinkleOffset) * 0.2 + 0.8;
+          const baseAlpha = (isFront ? hp.alpha : hp.alpha * 0.45) * haloFade * twinkle;
+          const currentSize = hp.size * scale * (isFront ? 1.2 : 0.85) * (1 + torchBoost * 0.6);
+
+          ctx.beginPath();
+          ctx.arc(screenX, screenY, Math.max(0.6, currentSize), 0, Math.PI * 2);
+
+          if (isFront && assemblyGlow > 0.2) {
+            ctx.shadowColor = "#ffffff";
+            ctx.shadowBlur = 6 * assemblyGlow + 8 * torchBoost;
+            ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1, baseAlpha + 0.3)})`;
+          } else {
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = `rgba(255, 255, 255, ${baseAlpha})`;
+          }
+
+          ctx.fill();
+        }
+
+        ctx.shadowBlur = 0;
+      }
 
       // Laser lines between nearby torchlit particles
       if (torchLitParticles.length > 1) {

@@ -151,37 +151,59 @@ const ACADEMIC_DOCS: AcademicDoc[] = [
 
 export default function CylinderOrbitalShowcase3D() {
   const [rotationAngle, setRotationAngle] = useState(0);
-  const [isAutoRotating, setIsAutoRotating] = useState(true);
   const [activeDoc, setActiveDoc] = useState<AcademicDoc | null>(null);
   const [selectedDocForModal, setSelectedDocForModal] = useState<AcademicDoc | null>(null);
+  const [mouseCoords, setMouseCoords] = useState({ x: 0, y: 0, tiltX: 0, tiltY: 0, isHovering: false });
+  const containerRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
   const lastMouseXRef = useRef(0);
 
-  // Auto rotation
+  // Auto rotation: continuous and smooth ("eko rukna nahi chahiye, ghoomte rahe")
   useEffect(() => {
-    if (!isAutoRotating) return;
     const interval = setInterval(() => {
-      setRotationAngle((prev) => (prev + 0.35) % 360);
+      if (!isDraggingRef.current) {
+        setRotationAngle((prev) => (prev + (activeDoc ? 0.20 : 0.40)) % 360);
+      }
     }, 30);
     return () => clearInterval(interval);
-  }, [isAutoRotating]);
+  }, [activeDoc]);
 
-  // Drag interaction
+  // Drag & Cursor interaction ("cursor ke saare effects daal dena haan")
   const handleMouseDown = (e: React.MouseEvent) => {
     isDraggingRef.current = true;
     lastMouseXRef.current = e.clientX;
-    setIsAutoRotating(false);
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDraggingRef.current) return;
-    const deltaX = e.clientX - lastMouseXRef.current;
-    lastMouseXRef.current = e.clientX;
-    setRotationAngle((prev) => (prev + deltaX * 0.45) % 360);
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const localX = e.clientX - rect.left;
+      const localY = e.clientY - rect.top;
+      const normX = (localX / rect.width - 0.5) * 2;
+      const normY = (localY / rect.height - 0.5) * 2;
+      setMouseCoords({
+        x: localX,
+        y: localY,
+        tiltX: normX * 14,
+        tiltY: normY * -10,
+        isHovering: true,
+      });
+    }
+
+    if (isDraggingRef.current) {
+      const deltaX = e.clientX - lastMouseXRef.current;
+      lastMouseXRef.current = e.clientX;
+      setRotationAngle((prev) => (prev + deltaX * 0.45) % 360);
+    }
   };
 
   const handleMouseUp = () => {
     isDraggingRef.current = false;
+  };
+
+  const handleMouseLeave = () => {
+    isDraggingRef.current = false;
+    setMouseCoords((prev) => ({ ...prev, isHovering: false, tiltX: 0, tiltY: 0 }));
   };
 
   const count = ACADEMIC_DOCS.length;
@@ -189,70 +211,34 @@ export default function CylinderOrbitalShowcase3D() {
 
   return (
     <div 
-      className="relative w-full py-16 px-4 md:px-8 bg-black overflow-hidden select-none"
+      ref={containerRef}
+      className="relative w-full py-12 px-4 md:px-8 bg-black overflow-hidden select-none"
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
+      onMouseLeave={handleMouseLeave}
     >
       {/* 3D Perspective Grid Floor on bottom */}
       <div className="absolute inset-x-0 bottom-0 h-[380px] perspective-grid-floor opacity-45 pointer-events-none z-0" />
 
-      {/* Top Header & Section Tag */}
-      <div className="relative z-10 max-w-4xl mx-auto text-center mb-10">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-white text-black text-[11px] font-mono font-bold uppercase tracking-widest rounded-full mb-4 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
-          <Sparkles className="w-3.5 h-3.5" />
-          INTERVIEW QUESTION // 360° ARCHITECTURE
-        </div>
-
-        <h2 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight text-white uppercase font-sans mb-3 leading-none">
-          WHAT IS <span className="underline decoration-white decoration-4 underline-offset-8">RAG</span>, AND HOW DOES IT WORK <span className="underline decoration-white decoration-4 underline-offset-8">INTERNALLY</span>?
-        </h2>
-
-        <p className="text-slate-400 text-sm md:text-base max-w-2xl mx-auto font-sans mt-4">
-          Explain it with verifiable 3D indexed documents. Drag or scrub the 360° cylinder to inspect how our PyMuPDF parser, 384d BGE vector embeddings, and citation cards index every paper.
-        </p>
-
-        {/* Orbit Controls */}
-        <div className="flex items-center justify-center gap-3 mt-6">
-          <button
-            onClick={() => setRotationAngle((prev) => (prev - 45) % 360)}
-            className="p-2 rounded-full border border-white/20 bg-black/60 text-white hover:bg-white hover:text-black transition"
-            title="Rotate Left"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          
-          <button
-            onClick={() => setIsAutoRotating(!isAutoRotating)}
-            className={`px-4 py-1.5 rounded-full text-xs font-mono uppercase tracking-wider border transition flex items-center gap-2 ${
-              isAutoRotating 
-                ? "bg-white text-black font-bold border-white shadow-[0_0_12px_rgba(255,255,255,0.6)]" 
-                : "bg-black/60 text-slate-300 border-white/20 hover:text-white"
-            }`}
-          >
-            <RotateCw className={`w-3.5 h-3.5 ${isAutoRotating ? "animate-spin" : ""}`} />
-            {isAutoRotating ? "Orbiting (360° Active)" : "Orbit Paused (Drag to Scrub)"}
-          </button>
-
-          <button
-            onClick={() => setRotationAngle((prev) => (prev + 45) % 360)}
-            className="p-2 rounded-full border border-white/20 bg-black/60 text-white hover:bg-white hover:text-black transition"
-            title="Rotate Right"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
+      {/* Dynamic Cursor Spotlight Beam */}
+      <div 
+        className="pointer-events-none absolute inset-0 z-10 transition-opacity duration-300"
+        style={{
+          background: mouseCoords.isHovering
+            ? `radial-gradient(circle 420px at ${mouseCoords.x}px ${mouseCoords.y}px, rgba(255, 255, 255, 0.08), transparent 75%)`
+            : "none",
+        }}
+      />
 
       {/* 3D Cylindrical Orbit Stage */}
       <div 
-        className="relative w-full h-[460px] flex items-center justify-center cursor-grab active:cursor-grabbing perspective-stage z-10"
+        className="relative w-full h-[470px] flex items-center justify-center cursor-grab active:cursor-grabbing perspective-stage z-10"
         onMouseDown={handleMouseDown}
       >
         <div 
-          className="relative w-[260px] h-[340px] preserve-3d transition-transform duration-75"
+          className="relative w-[260px] h-[340px] preserve-3d transition-transform duration-100 ease-out"
           style={{
-            transform: `rotateX(-10deg) rotateY(${rotationAngle}deg)`,
+            transform: `rotateX(${-10 + mouseCoords.tiltY}deg) rotateY(${rotationAngle + mouseCoords.tiltX}deg)`,
           }}
         >
           {ACADEMIC_DOCS.map((doc, index) => {
@@ -264,7 +250,6 @@ export default function CylinderOrbitalShowcase3D() {
                 key={doc.id}
                 onMouseEnter={() => {
                   setActiveDoc(doc);
-                  setIsAutoRotating(false);
                 }}
                 onMouseLeave={() => {
                   setActiveDoc(null);
@@ -283,7 +268,7 @@ export default function CylinderOrbitalShowcase3D() {
                 <div 
                   className={`relative w-full h-full p-4 rounded-lg bg-black/90 border transition-all duration-300 flex flex-col justify-between ${
                     isHovered 
-                      ? "border-white bg-black shadow-[0_0_35px_rgba(255,255,255,0.7)] scale-105" 
+                      ? "border-white bg-black shadow-[0_0_40px_rgba(255,255,255,0.8)] scale-105" 
                       : "border-white/40 hover:border-white shadow-[0_0_15px_rgba(255,255,255,0.15)]"
                   }`}
                 >

@@ -240,10 +240,26 @@ export default function LandingPage() {
       </section>
 
       {/* =========================================================================
-       * FOOTER: MINIMAL OBSIDIAN ARCHITECTURE
+       * FOOTER: MINIMAL OBSIDIAN ARCHITECTURE WITH GRAND HEADLINE
        * ========================================================================= */}
-      <footer className="border-t border-white/15 bg-black py-12 px-6 md:px-12 text-slate-400 text-xs font-mono">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+      <footer className="border-t border-white/15 bg-black pt-20 pb-12 px-6 md:px-12 text-slate-400 text-xs font-mono relative">
+        {/* Grand Architecture Question Headline (Moved to Footer in Big Bold Size) */}
+        <div className="max-w-5xl mx-auto text-center mb-20">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-white text-black text-[11px] font-mono font-bold uppercase tracking-widest rounded-full mb-6 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
+            <Sparkles className="w-3.5 h-3.5" />
+            360° ARCHITECTURE // RESEARCH GAP DISCOVERY
+          </div>
+
+          <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-tight text-white font-sans mb-6 leading-[1.05]">
+            WHAT IS <span className="underline decoration-white decoration-4 sm:decoration-8 underline-offset-8">RAG</span>, AND HOW DOES IT WORK <span className="underline decoration-white decoration-4 sm:decoration-8 underline-offset-8">INTERNALLY</span>?
+          </h2>
+
+          <p className="text-slate-400 text-sm sm:text-base md:text-lg max-w-3xl mx-auto font-sans leading-relaxed">
+            Explain it with verifiable 3D indexed documents. Our architecture coordinates PyMuPDF structural parsing, 384-dimensional BGE vector embeddings, BM25Okapi lexical retrieval, and automated 9-stage research gap discovery.
+          </p>
+        </div>
+
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-10 pt-10 border-t border-white/10">
           <div>
             <div className="flex items-center gap-2 mb-3">
               <div className="w-7 h-7 rounded bg-white text-black font-black text-xs flex items-center justify-center">

@@ -27,6 +27,8 @@ interface OrbitingHaloParticle {
   speed: number;
   radiusX: number;
   radiusY: number;
+  hubX: number;
+  hubY: number;
   inclineAngle: number;
   zAmplitude: number;
   size: number;
@@ -159,28 +161,21 @@ export default function VectorPointGalaxyCanvas({
       const targetCount = allTextPoints.length;
       const borderCount = borderPoints.length;
       
-      const TOTAL_POINTS = Math.max(2200, targetCount + 250);
+      const TOTAL_POINTS = targetCount;
 
-      // 1. Text Particles that form R A G
+      // 1. Text Particles that form R A G (100% converge to letters, zero leftover static points)
       for (let i = 0; i < TOTAL_POINTS; i++) {
         const initialAngle = Math.random() * Math.PI * 2;
         const initialRadius = Math.random() * (width * 0.65) + 80;
         const initialZ = (Math.random() - 0.5) * 400;
 
-        const isAssigned = i < targetCount;
         const isBorder = i < borderCount;
-
-        const targetP = isAssigned 
-          ? allTextPoints[i] 
-          : {
-              x: (Math.random() - 0.5) * width * 0.8,
-              y: (Math.random() - 0.5) * height * 0.7,
-            };
+        const targetP = allTextPoints[i];
 
         // Progressive spawn: starts with ~35 points, streams in remaining points smoothly
         const spawnThreshold = i < 35 
           ? 0 
-          : Math.pow((i - 35) / (TOTAL_POINTS - 35), 1.15) * 0.82;
+          : Math.pow((i - 35) / Math.max(1, TOTAL_POINTS - 35), 1.15) * 0.82;
 
         particles.push({
           x: Math.cos(initialAngle) * initialRadius,
@@ -188,38 +183,73 @@ export default function VectorPointGalaxyCanvas({
           z: initialZ,
           targetX: targetP.x,
           targetY: targetP.y,
-          targetZ: isAssigned ? (Math.random() - 0.5) * 15 : (Math.random() - 0.5) * 140,
-          vx: (Math.random() - 0.5) * 0.25,
-          vy: (Math.random() - 0.5) * 0.25,
-          vz: (Math.random() - 0.5) * 0.15,
-          size: isBorder ? (Math.random() * 0.6 + 1.4) : isAssigned ? (Math.random() * 0.6 + 1.0) : (Math.random() * 0.5 + 0.6),
-          alpha: isBorder ? 0.95 : isAssigned ? (Math.random() * 0.25 + 0.7) : 0.3,
+          targetZ: (Math.random() - 0.5) * 12,
+          vx: (Math.random() - 0.5) * 0.2,
+          vy: (Math.random() - 0.5) * 0.2,
+          vz: (Math.random() - 0.5) * 0.1,
+          size: isBorder ? (Math.random() * 0.5 + 1.5) : (Math.random() * 0.5 + 1.1),
+          alpha: isBorder ? 1.0 : (Math.random() * 0.2 + 0.8),
           angle: initialAngle,
           orbitRadius: initialRadius,
           orbitSpeed: (Math.random() * 0.016 + 0.006) * (Math.random() > 0.5 ? 1 : -1),
-          isTextPoint: isAssigned,
+          isTextPoint: true,
           isBorderPoint: isBorder,
           spawnThreshold,
         });
       }
 
-      // 2. Extra Orbiting Halo Particles ("eske banne ke baad kuch points or jo ki around ghoomte rahe")
-      const HALO_COUNT = 190;
+      // 2. Extra Orbiting Halo Particles ("eske banne ke baad points jo around ghoomte rahe, group me gather kar, solid type me, quantity bada de")
+      const HALO_COUNT = 520;
+      const letterSpacing = fontSize * 0.84;
+      const xR = -letterSpacing;
+      const xA = 0;
+      const xG = letterSpacing;
+
       for (let i = 0; i < HALO_COUNT; i++) {
-        // Diverse orbital bands (some wide, some closer)
-        const bandRatio = (i % 3 === 0) ? 0.44 : (i % 3 === 1) ? 0.52 : 0.62;
-        const radiusX = width * (bandRatio + (Math.random() - 0.5) * 0.12);
-        const radiusY = height * (bandRatio * 0.65 + (Math.random() - 0.5) * 0.10);
+        // Group into 4 gathered swarms: Cluster R, Cluster A, Cluster G, and connecting ribbon
+        const hubSelector = i % 4;
+        let hubX = 0;
+        let radiusX = 0;
+        let radiusY = 0;
+        let zAmplitude = 90;
+
+        if (hubSelector === 0) {
+          // Group 1: Gathered tightly around letter 'R'
+          hubX = xR;
+          radiusX = fontSize * (0.22 + Math.random() * 0.18);
+          radiusY = fontSize * (0.24 + Math.random() * 0.20);
+          zAmplitude = 100;
+        } else if (hubSelector === 1) {
+          // Group 2: Gathered tightly around letter 'A'
+          hubX = xA;
+          radiusX = fontSize * (0.20 + Math.random() * 0.16);
+          radiusY = fontSize * (0.22 + Math.random() * 0.18);
+          zAmplitude = 80;
+        } else if (hubSelector === 2) {
+          // Group 3: Gathered tightly around letter 'G'
+          hubX = xG;
+          radiusX = fontSize * (0.22 + Math.random() * 0.18);
+          radiusY = fontSize * (0.24 + Math.random() * 0.20);
+          zAmplitude = 100;
+        } else {
+          // Group 4: Dynamic ribbon looping across the entire word RAG
+          hubX = 0;
+          radiusX = letterSpacing * 1.30 + (Math.random() - 0.5) * 35;
+          radiusY = fontSize * 0.48 + (Math.random() - 0.5) * 25;
+          zAmplitude = 130;
+        }
 
         orbitingHaloParticles.push({
           angle: Math.random() * Math.PI * 2,
-          speed: (Math.random() * 0.010 + 0.004) * (Math.random() > 0.4 ? 1 : -1),
+          speed: (Math.random() * 0.014 + 0.007) * (Math.random() > 0.4 ? 1 : -1),
           radiusX,
           radiusY,
-          inclineAngle: (Math.random() - 0.5) * 0.65, // Varied 3D orbital tilts
-          zAmplitude: Math.random() * 180 + 80,
-          size: Math.random() * 1.3 + 0.9,
-          alpha: Math.random() * 0.4 + 0.55,
+          hubX,
+          hubY: 0,
+          inclineAngle: (Math.random() - 0.5) * 0.7, // 3D orbital tilt
+          zAmplitude,
+          size: Math.random() * 0.8 + 1.8, // Solid, punchy visible size
+          alpha: 1.0, // Solid type opacity
           twinkleSpeed: Math.random() * 2 + 1,
           twinkleOffset: Math.random() * Math.PI * 2,
         });
@@ -420,8 +450,8 @@ export default function VectorPointGalaxyCanvas({
           // Continuous orbital revolution
           hp.angle += hp.speed;
 
-          // 3D Elliptical position
-          const ox = Math.cos(hp.angle) * hp.radiusX;
+          // 3D Elliptical position anchored to letter hub
+          const ox = Math.cos(hp.angle) * hp.radiusX + hp.hubX;
           const oy = Math.sin(hp.angle) * hp.radiusY;
 
           // 3D Inclined rotation
@@ -458,23 +488,17 @@ export default function VectorPointGalaxyCanvas({
             }
           }
 
-          // Depth-based brightness: particles in front of RAG (rotZ > 0) are brighter!
+          // Solid, crisp, and bright stardust rendering ("solid type me samajh")
           const isFront = rotZ > 0;
-          const twinkle = Math.sin(globalTimer * hp.twinkleSpeed + hp.twinkleOffset) * 0.2 + 0.8;
-          const baseAlpha = (isFront ? hp.alpha : hp.alpha * 0.45) * haloFade * twinkle;
-          const currentSize = hp.size * scale * (isFront ? 1.2 : 0.85) * (1 + torchBoost * 0.6);
+          const currentSize = hp.size * scale * (isFront ? 1.25 : 0.95) * (1 + torchBoost * 0.6);
 
           ctx.beginPath();
-          ctx.arc(screenX, screenY, Math.max(0.6, currentSize), 0, Math.PI * 2);
+          ctx.arc(screenX, screenY, Math.max(1.1, currentSize), 0, Math.PI * 2);
 
-          if (isFront && assemblyGlow > 0.2) {
-            ctx.shadowColor = "#ffffff";
-            ctx.shadowBlur = 6 * assemblyGlow + 8 * torchBoost;
-            ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1, baseAlpha + 0.3)})`;
-          } else {
-            ctx.shadowBlur = 0;
-            ctx.fillStyle = `rgba(255, 255, 255, ${baseAlpha})`;
-          }
+          // Solid bright white with radiant bloom
+          ctx.shadowColor = "#ffffff";
+          ctx.shadowBlur = isFront ? Math.max(5, 8 * assemblyGlow + 8 * torchBoost) : 2;
+          ctx.fillStyle = isFront ? "#ffffff" : "rgba(255, 255, 255, 0.85)";
 
           ctx.fill();
         }

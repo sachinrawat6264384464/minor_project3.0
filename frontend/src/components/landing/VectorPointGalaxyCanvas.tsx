@@ -156,6 +156,7 @@ export default function VectorPointGalaxyCanvas({
       particles.length = 0;
       orbitingHaloParticles.length = 0;
 
+      const fontSize = Math.min(width * 0.30, Math.min(height * 0.70, 330));
       const { borderPoints, interiorPoints } = generateGrandRAGPoints(width, height);
       const allTextPoints = [...borderPoints, ...interiorPoints];
       const targetCount = allTextPoints.length;

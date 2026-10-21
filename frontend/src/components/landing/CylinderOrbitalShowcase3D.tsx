@@ -212,7 +212,7 @@ export default function CylinderOrbitalShowcase3D() {
   return (
     <div 
       ref={containerRef}
-      className="relative w-full py-12 px-4 md:px-8 bg-black overflow-hidden select-none"
+      className="relative w-full py-12 px-4 md:px-8 bg-transparent overflow-hidden select-none"
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}

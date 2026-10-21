@@ -180,7 +180,7 @@ export default function VectorSpaceLaserScene() {
   ];
 
   return (
-    <div className="relative w-full py-16 px-4 md:px-8 bg-black overflow-hidden font-sans text-white">
+    <div className="relative w-full py-16 px-4 md:px-8 bg-transparent overflow-hidden font-sans text-white">
       {/* Perspective Grid Floor */}
       <div className="absolute inset-x-0 bottom-0 h-[420px] perspective-grid-floor opacity-40 pointer-events-none z-0" />
 

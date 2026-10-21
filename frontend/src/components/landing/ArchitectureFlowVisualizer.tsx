@@ -139,7 +139,7 @@ export default function ArchitectureFlowVisualizer() {
   const activeStage = ARCH_STAGES.find((s) => s.id === activeStageId) || ARCH_STAGES[0];
 
   return (
-    <div className="relative w-full py-20 px-4 md:px-8 bg-black text-white font-sans overflow-hidden border-t border-white/10">
+    <div className="relative w-full py-20 px-4 md:px-8 bg-transparent text-white font-sans overflow-hidden">
       
       {/* 3D Perspective Grid Ambient */}
       <div className="absolute inset-x-0 bottom-0 h-[320px] perspective-grid-floor-dense opacity-25 pointer-events-none" />

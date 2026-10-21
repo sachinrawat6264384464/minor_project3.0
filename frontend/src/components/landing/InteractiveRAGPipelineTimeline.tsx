@@ -121,7 +121,7 @@ export default function InteractiveRAGPipelineTimeline() {
   const currentStep = PIPELINE_STEPS[activeStepIndex];
 
   return (
-    <div className="relative w-full py-20 px-4 md:px-8 bg-black text-white font-sans overflow-hidden border-t border-b border-white/10">
+    <div className="relative w-full py-20 px-4 md:px-8 bg-transparent text-white font-sans overflow-hidden">
       
       {/* Background Starfield Canvas Simulation */}
       <div className="absolute inset-0 pointer-events-none opacity-20">

@@ -96,37 +96,49 @@ export default function LandingPage() {
       </section>
 
       {/* =========================================================================
-       * SECTION 1: 360° CYLINDRICAL ORBITAL PAPER SHOWCASE (Matching User Image 1 & 2)
+       * CONTINUOUS ARCHITECTURAL BLUEPRINT GRID WRAPPER (HERO TO FOOTER)
        * ========================================================================= */}
-      <section id="orbital-papers">
-        <CylinderOrbitalShowcase3D />
-      </section>
+      <div className="relative w-full blueprint-matrix-grid overflow-hidden">
+        {/* Subtle Ambient Radial Lighting for Cosmic Depth */}
+        <div 
+          className="pointer-events-none absolute inset-0 z-0 opacity-40"
+          style={{
+            background: "radial-gradient(ellipse 90% 60% at 50% 10%, rgba(255, 255, 255, 0.05), transparent 80%)",
+          }}
+        />
 
-      {/* =========================================================================
-       * SECTION 2: THE R-A-G CORE FORMULA & DYNAMIC TIMELINE (Matching User Image 4)
-       * ========================================================================= */}
-      <section id="how-rag-works">
-        <InteractiveRAGPipelineTimeline />
-      </section>
+        {/* =========================================================================
+         * SECTION 1: 360° CYLINDRICAL ORBITAL PAPER SHOWCASE (Matching User Image 1 & 2)
+         * ========================================================================= */}
+        <section id="orbital-papers" className="relative z-10 bg-transparent">
+          <CylinderOrbitalShowcase3D />
+        </section>
 
-      {/* =========================================================================
-       * SECTION 3: 3D VECTOR SPACE & NEAREST CHUNKS LASER SCENE (Matching User Image 3 & 5)
-       * ========================================================================= */}
-      <section id="vector-db">
-        <VectorSpaceLaserScene />
-      </section>
+        {/* =========================================================================
+         * SECTION 2: THE R-A-G CORE FORMULA & DYNAMIC TIMELINE (Matching User Image 4)
+         * ========================================================================= */}
+        <section id="how-rag-works" className="relative z-10 bg-transparent">
+          <InteractiveRAGPipelineTimeline />
+        </section>
 
-      {/* =========================================================================
-       * SECTION 4: 9-STAGE RESEARCH GAP & SYSTEM FLOW (Matching ARCHITECTURE.md)
-       * ========================================================================= */}
-      <section id="architecture-stages">
-        <ArchitectureFlowVisualizer />
-      </section>
+        {/* =========================================================================
+         * SECTION 3: 3D VECTOR SPACE & NEAREST CHUNKS LASER SCENE (Matching User Image 3 & 5)
+         * ========================================================================= */}
+        <section id="vector-db" className="relative z-10 bg-transparent">
+          <VectorSpaceLaserScene />
+        </section>
 
-      {/* =========================================================================
-       * SECTION 5: SIDE-BY-SIDE PAPER COMPARISON MATRIX PREVIEW
-       * ========================================================================= */}
-      <section className="py-20 px-4 md:px-8 max-w-6xl mx-auto text-white border-t border-white/10">
+        {/* =========================================================================
+         * SECTION 4: 9-STAGE RESEARCH GAP & SYSTEM FLOW (Matching ARCHITECTURE.md)
+         * ========================================================================= */}
+        <section id="architecture-stages" className="relative z-10 bg-transparent">
+          <ArchitectureFlowVisualizer />
+        </section>
+
+        {/* =========================================================================
+         * SECTION 5: SIDE-BY-SIDE PAPER COMPARISON MATRIX PREVIEW (Border removed)
+         * ========================================================================= */}
+        <section className="relative z-10 bg-transparent py-20 px-4 md:px-8 max-w-6xl mx-auto text-white">
         <div className="text-center max-w-3xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-white text-black text-[11px] font-mono font-bold uppercase tracking-widest rounded-full mb-3 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
             <GitCompare className="w-3.5 h-3.5" />
@@ -242,7 +254,7 @@ export default function LandingPage() {
       {/* =========================================================================
        * FOOTER: MINIMAL OBSIDIAN ARCHITECTURE WITH GRAND HEADLINE & BRANDING
        * ========================================================================= */}
-      <footer className="border-t border-white/15 bg-black pt-20 pb-12 px-6 md:px-12 text-slate-400 text-xs font-mono relative">
+      <footer className="relative z-10 bg-transparent pt-20 pb-12 px-6 md:px-12 text-slate-400 text-xs font-mono">
         {/* Grand Architecture Question Headline (Moved to Footer in Big Bold Size) */}
         <div className="max-w-5xl mx-auto text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-white text-black text-[11px] font-mono font-bold uppercase tracking-widest rounded-full mb-5 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
@@ -337,5 +349,6 @@ export default function LandingPage() {
         </div>
       </footer>
     </div>
-  );
+  </div>
+);
 }

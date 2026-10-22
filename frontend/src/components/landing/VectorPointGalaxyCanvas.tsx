@@ -123,29 +123,33 @@ export default function VectorPointGalaxyCanvas({
         return data[(py * w + px) * 4] > 100;
       };
 
+      // High-Density Sampling (Step = 3 for 3x richer stardust density)
       const step = 3;
 
       for (let y = step; y < h - step; y += step) {
         for (let x = step; x < w - step; x += step) {
           if (isOpaque(x, y)) {
-            // Check boundary perimeter (has a transparent neighbor)
+            // Check boundary perimeter using 8-connectivity for complete crisp border detection
             const isBorder = 
               !isOpaque(x - step, y) || 
               !isOpaque(x + step, y) || 
               !isOpaque(x, y - step) || 
               !isOpaque(x, y + step) ||
               !isOpaque(x - step, y - step) ||
-              !isOpaque(x + step, y + step);
+              !isOpaque(x + step, y + step) ||
+              !isOpaque(x - step, y + step) ||
+              !isOpaque(x + step, y - step);
 
             if (isBorder) {
+              // Border points lock onto exact glyph boundary without jitter
               borderPoints.push({
                 x: x - w / 2,
                 y: y - h / 2,
               });
             } else {
-              // Anti-scanline jitter for organic cosmic texture
-              const jx = (Math.random() - 0.5) * 2.2;
-              const jy = (Math.random() - 0.5) * 2.2;
+              // Anti-scanline micro-jitter for organic cosmic stardust texture
+              const jx = (Math.random() - 0.5) * 1.4;
+              const jy = (Math.random() - 0.5) * 1.4;
               interiorPoints.push({
                 x: x + jx - w / 2,
                 y: y + jy - h / 2,
@@ -197,10 +201,10 @@ export default function VectorPointGalaxyCanvas({
         const isBorder = i < borderCount;
         const targetP = allTextPoints[i];
 
-        // Progressive spawn: starts with ~35 points, streams in remaining points smoothly
-        const spawnThreshold = i < 35 
+        // Progressive spawn: starts with initial seed points, streams in remaining points smoothly
+        const spawnThreshold = i < 40 
           ? 0 
-          : Math.pow((i - 35) / Math.max(1, TOTAL_POINTS - 35), 1.15) * 0.82;
+          : Math.pow((i - 40) / Math.max(1, TOTAL_POINTS - 40), 1.15) * 0.82;
 
         particles.push({
           x: Math.cos(initialAngle) * initialRadius,
@@ -208,12 +212,12 @@ export default function VectorPointGalaxyCanvas({
           z: initialZ,
           targetX: targetP.x,
           targetY: targetP.y,
-          targetZ: (Math.random() - 0.5) * 12,
+          targetZ: 0, // Zero Z-offset ensures 100% pixel-perfect alignment with metallic stroke
           vx: (Math.random() - 0.5) * 0.2,
           vy: (Math.random() - 0.5) * 0.2,
           vz: (Math.random() - 0.5) * 0.1,
-          size: isBorder ? (Math.random() * 0.5 + 1.5) : (Math.random() * 0.5 + 1.1),
-          alpha: isBorder ? 1.0 : (Math.random() * 0.2 + 0.8),
+          size: isBorder ? (Math.random() * 0.4 + 1.3) : (Math.random() * 0.4 + 0.95),
+          alpha: isBorder ? 1.0 : (Math.random() * 0.25 + 0.75),
           angle: initialAngle,
           orbitRadius: initialRadius,
           orbitSpeed: (Math.random() * 0.016 + 0.006) * (Math.random() > 0.5 ? 1 : -1),
@@ -282,44 +286,6 @@ export default function VectorPointGalaxyCanvas({
 
     initSystem();
 
-    // Mouse / Touch Event Listeners for Torch Effect
-    const updateTorchCoords = (clientX: number, clientY: number) => {
-      const rect = canvas.getBoundingClientRect();
-      if (!rect || !rect.width || !rect.height) return;
-      const x = clientX - rect.left;
-      const y = clientY - rect.top;
-      if (Number.isFinite(x) && Number.isFinite(y)) {
-        mouseRef.current.x = x;
-        mouseRef.current.y = y;
-        mouseRef.current.isHovered = true;
-        mouseRef.current.tiltX = ((x - width / 2) / width) * 20;
-        mouseRef.current.tiltY = ((y - height / 2) / height) * 20;
-      }
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!interactive) return;
-      updateTorchCoords(e.clientX, e.clientY);
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (!interactive || !e.touches[0]) return;
-      updateTorchCoords(e.touches[0].clientX, e.touches[0].clientY);
-    };
-
-    const handleMouseLeave = () => {
-      mouseRef.current.isHovered = false;
-      mouseRef.current.x = -1000;
-      mouseRef.current.y = -1000;
-      mouseRef.current.tiltX = 0;
-      mouseRef.current.tiltY = 0;
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("touchmove", handleTouchMove, { passive: true });
-    window.addEventListener("mouseleave", handleMouseLeave);
-    window.addEventListener("touchend", handleMouseLeave);
-
     let convergenceProgress = 0;
     let assemblyGlow = 0; // Activates smoothly once RAG is formed
     let globalTimer = 0;
@@ -340,36 +306,6 @@ export default function VectorPointGalaxyCanvas({
 
       globalTimer += 0.02;
 
-      const torchX = Number.isFinite(mouseRef.current.x) ? mouseRef.current.x : -1000;
-      const torchY = Number.isFinite(mouseRef.current.y) ? mouseRef.current.y : -1000;
-      const torchRadius = mouseRef.current.radius;
-      
-      const isTorchActive = 
-        mouseRef.current.isHovered && 
-        torchX >= 0 && 
-        torchX <= width && 
-        torchY >= 0 && 
-        torchY <= height;
-
-      // Draw subtle torch spotlight beam
-      if (isTorchActive) {
-        try {
-          const outerR = Math.max(10, torchRadius * 1.4);
-          const torchGrad = ctx.createRadialGradient(torchX, torchY, 0, torchX, torchY, outerR);
-          torchGrad.addColorStop(0, "rgba(255, 255, 255, 0.15)");
-          torchGrad.addColorStop(0.4, "rgba(255, 255, 255, 0.05)");
-          torchGrad.addColorStop(0.8, "rgba(255, 255, 255, 0.01)");
-          torchGrad.addColorStop(1, "transparent");
-
-          ctx.fillStyle = torchGrad;
-          ctx.beginPath();
-          ctx.arc(torchX, torchY, outerR, 0, Math.PI * 2);
-          ctx.fill();
-        } catch {
-          // Guard canvas coordinates
-        }
-      }
-
       // 0. RENDER BACKGROUND COSMIC STATIC STARS ("background me bhi to static rakh")
       for (let i = 0; i < staticStars.length; i++) {
         const star = staticStars[i];
@@ -380,7 +316,76 @@ export default function VectorPointGalaxyCanvas({
         ctx.fill();
       }
 
-      const torchLitParticles: { x: number; y: number }[] = [];
+      const projScale = fov / 420;
+      const fontSize = Math.min(width * 0.30, Math.min(height * 0.70, 330));
+      const letterSpacing = fontSize * 0.84;
+      const tiltOffsetX = 0;
+      const tiltOffsetY = 0;
+
+      const localTextY = height * 0.49 - height / 2;
+      const curTextY = height / 2 + localTextY * projScale + tiltOffsetY;
+      const currentFontSize = fontSize * projScale;
+      const currentSpacing = letterSpacing * projScale;
+      const xR = width / 2 - currentSpacing + tiltOffsetX;
+      const xA = width / 2 + tiltOffsetX;
+      const xG = width / 2 + currentSpacing + tiltOffsetX;
+      const baseline = curTextY + currentFontSize * 0.34; // exact bottom of letters
+
+      // 0.4. GLASS CONTACT SHADOW & COMPACT VERTICAL REFLECTION DIRECTLY UNDERNEATH EACH LETTER
+      if (assemblyGlow > 0.05) {
+        ctx.save();
+
+        // a) Ambient contact shadow directly under the feet of R, A, G
+        const drawLetterFootShadow = (lx: number, sw: number) => {
+          const shadowGrad = ctx.createRadialGradient(lx, baseline + 1, 2, lx, baseline + 1, sw);
+          shadowGrad.addColorStop(0, `rgba(0, 0, 0, ${0.92 * assemblyGlow})`);
+          shadowGrad.addColorStop(0.45, `rgba(0, 0, 0, ${0.55 * assemblyGlow})`);
+          shadowGrad.addColorStop(0.8, `rgba(15, 23, 42, ${0.18 * assemblyGlow})`);
+          shadowGrad.addColorStop(1, "transparent");
+
+          ctx.fillStyle = shadowGrad;
+          ctx.beginPath();
+          ctx.ellipse(lx, baseline + 1, sw, currentFontSize * 0.045, 0, 0, Math.PI * 2);
+          ctx.fill();
+        };
+
+        drawLetterFootShadow(xR, currentFontSize * 0.34);
+        drawLetterFootShadow(xA, currentFontSize * 0.38);
+        drawLetterFootShadow(xG, currentFontSize * 0.34);
+
+        // b) Compact vertical mirror reflection directly touching the feet of R, A, G
+        const reflHeight = currentFontSize * 0.28;
+        ctx.beginPath();
+        ctx.rect(0, baseline - 1, width, reflHeight);
+        ctx.clip();
+
+        // Mirror vertically anchored AT baseline
+        ctx.translate(0, baseline);
+        ctx.scale(1, -0.42);
+        ctx.translate(0, -baseline);
+
+        const reflGrad = ctx.createLinearGradient(0, baseline, 0, curTextY - currentFontSize * 0.3);
+        reflGrad.addColorStop(0, `rgba(255, 255, 255, ${0.32 * assemblyGlow})`);
+        reflGrad.addColorStop(0.35, `rgba(203, 213, 225, ${0.12 * assemblyGlow})`);
+        reflGrad.addColorStop(0.7, `rgba(148, 163, 184, ${0.03 * assemblyGlow})`);
+        reflGrad.addColorStop(1, "transparent");
+
+        ctx.font = `900 ${currentFontSize}px "Space Grotesk", "Arial Black", "Inter", sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = reflGrad;
+        ctx.fillText("R", xR, curTextY);
+        ctx.fillText("A", xA, curTextY);
+        ctx.fillText("G", xG, curTextY);
+
+        ctx.strokeStyle = `rgba(226, 232, 240, ${0.14 * assemblyGlow})`;
+        ctx.lineWidth = 1.2;
+        ctx.strokeText("R", xR, curTextY);
+        ctx.strokeText("A", xA, curTextY);
+        ctx.strokeText("G", xG, curTextY);
+
+        ctx.restore();
+      }
 
       // 1. RENDER MAIN R A G TEXT PARTICLES
       for (let i = 0; i < particles.length; i++) {
@@ -408,9 +413,9 @@ export default function VectorPointGalaxyCanvas({
           p.y += (targetCurrentY - p.y) * 0.13;
           p.z += (targetCurrentZ - p.z) * 0.13;
 
-          if (particleProgress > 0.85) {
-            p.x += Math.sin(globalTimer + i * 0.3) * 0.12;
-            p.y += Math.cos(globalTimer + i * 0.3) * 0.12;
+          if (particleProgress > 0.85 && !p.isBorderPoint) {
+            p.x += Math.sin(globalTimer + i * 0.3) * 0.08;
+            p.y += Math.cos(globalTimer + i * 0.3) * 0.08;
           }
         } else {
           p.x += p.vx;
@@ -424,45 +429,21 @@ export default function VectorPointGalaxyCanvas({
         if (screenZ <= 10) continue;
 
         const scale = fov / screenZ;
-        let screenX = width / 2 + p.x * scale + mouseRef.current.tiltX * 0.15;
-        let screenY = height / 2 + p.y * scale + mouseRef.current.tiltY * 0.15;
+        const screenX = width / 2 + p.x * scale;
+        const screenY = height / 2 + p.y * scale;
 
         if (!Number.isFinite(screenX) || !Number.isFinite(screenY)) continue;
 
-        // Torch Effect: Repulsion & Highlighting
-        let torchBoost = 0;
-        if (isTorchActive) {
-          const dx = screenX - torchX;
-          const dy = screenY - torchY;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist < torchRadius) {
-            torchBoost = (1 - dist / torchRadius);
-
-            const pushAngle = Math.atan2(dy, dx);
-            const pushForce = torchBoost * 25;
-            screenX += Math.cos(pushAngle) * pushForce;
-            screenY += Math.sin(pushAngle) * pushForce;
-
-            torchLitParticles.push({ x: screenX, y: screenY });
-          }
-        }
-
-        const currentSize = p.size * scale * (1 + torchBoost * 0.8);
-        const currentAlpha = Math.min(1, Math.max(0.2, (p.alpha * scale) + torchBoost * 0.3));
+        const currentSize = p.size * scale;
+        const currentAlpha = Math.min(1, Math.max(0.2, p.alpha * scale));
 
         ctx.beginPath();
         ctx.arc(screenX, screenY, Math.max(0.7, currentSize), 0, Math.PI * 2);
 
-        // Radiant bloom once formed with breathing pulse
-        if (p.isTextPoint && assemblyGlow > 0.1) {
-          const pulse = 1 + Math.sin(globalTimer * 2.2 + (p.x * 0.01)) * 0.16;
+        // Radiant bloom: crisp illumination on border points
+        if (p.isBorderPoint && assemblyGlow > 0.1) {
           ctx.shadowColor = "#ffffff";
-          ctx.shadowBlur = Math.max(3, (p.isBorderPoint ? 10 : 6) * assemblyGlow * pulse + 12 * torchBoost);
-          ctx.fillStyle = "#ffffff";
-        } else if (torchBoost > 0.05) {
-          ctx.shadowColor = "#ffffff";
-          ctx.shadowBlur = 10 * torchBoost;
+          ctx.shadowBlur = 4;
           ctx.fillStyle = "#ffffff";
         } else {
           ctx.shadowBlur = 0;
@@ -473,6 +454,124 @@ export default function VectorPointGalaxyCanvas({
       }
 
       ctx.shadowBlur = 0;
+
+      // 1.5. SCULPTED METALLIC SILVER FRAME & SPECULAR SHINING SWEEP ("silbver frm me diye or sining kare, reflection ho")
+      if (assemblyGlow > 0.05) {
+        ctx.save();
+        // Transform into exact frame of reference where text particles reside
+        ctx.translate(width / 2 + tiltOffsetX, height / 2 + tiltOffsetY);
+        ctx.scale(projScale, projScale);
+
+        const localXR = -letterSpacing;
+        const localXA = 0;
+        const localXG = letterSpacing;
+
+        ctx.font = `900 ${fontSize}px "Space Grotesk", "Arial Black", "Inter", sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        // a) Multi-faceted metallic silver gradient frame (100% border aligned)
+        const silverFrameGrad = ctx.createLinearGradient(
+          localXR - fontSize * 0.45, localTextY - fontSize * 0.45,
+          localXG + fontSize * 0.45, localTextY + fontSize * 0.45
+        );
+        silverFrameGrad.addColorStop(0.0, `rgba(203, 213, 225, ${0.85 * assemblyGlow})`);
+        silverFrameGrad.addColorStop(0.18, `rgba(255, 255, 255, ${0.98 * assemblyGlow})`);
+        silverFrameGrad.addColorStop(0.35, `rgba(148, 163, 184, ${0.70 * assemblyGlow})`);
+        silverFrameGrad.addColorStop(0.5, `rgba(248, 250, 252, ${0.98 * assemblyGlow})`);
+        silverFrameGrad.addColorStop(0.68, `rgba(100, 116, 139, ${0.68 * assemblyGlow})`);
+        silverFrameGrad.addColorStop(0.84, `rgba(255, 255, 255, ${0.95 * assemblyGlow})`);
+        silverFrameGrad.addColorStop(1.0, `rgba(203, 213, 225, ${0.85 * assemblyGlow})`);
+
+        ctx.strokeStyle = silverFrameGrad;
+        ctx.lineWidth = 2.2 / projScale;
+        ctx.shadowColor = "#ffffff";
+        ctx.shadowBlur = 4 * assemblyGlow;
+        ctx.strokeText("R", localXR, localTextY);
+        ctx.strokeText("A", localXA, localTextY);
+        ctx.strokeText("G", localXG, localTextY);
+        ctx.shadowBlur = 0;
+
+        // b) Inner crisp chrome bevel highlight line
+        ctx.strokeStyle = `rgba(255, 255, 255, ${0.55 * assemblyGlow})`;
+        ctx.lineWidth = 1.0 / projScale;
+        ctx.strokeText("R", localXR, localTextY);
+        ctx.strokeText("A", localXA, localTextY);
+        ctx.strokeText("G", localXG, localTextY);
+
+        // c) Dynamic Specular Light Shine Beam ("sining kare smaj reflection ho")
+        const shineInterval = 4.2; // sweeps periodically across letters
+        const shineTime = (globalTimer * 0.65) % shineInterval;
+        if (shineTime < 1.6 && assemblyGlow > 0.2) {
+          const progress = shineTime / 1.6;
+          const leftX = localXR - fontSize * 0.55;
+          const rightX = localXG + fontSize * 0.55;
+          const currentShineX = leftX + progress * (rightX - leftX);
+          const bandWidth = fontSize * 0.40;
+
+          const sweepGrad = ctx.createLinearGradient(
+            currentShineX - bandWidth, localTextY - fontSize * 0.4,
+            currentShineX + bandWidth, localTextY + fontSize * 0.4
+          );
+          sweepGrad.addColorStop(0, "transparent");
+          sweepGrad.addColorStop(0.35, "rgba(255, 255, 255, 0.1)");
+          sweepGrad.addColorStop(0.5, `rgba(255, 255, 255, ${0.95 * assemblyGlow})`);
+          sweepGrad.addColorStop(0.65, "rgba(255, 255, 255, 0.1)");
+          sweepGrad.addColorStop(1, "transparent");
+
+          ctx.strokeStyle = sweepGrad;
+          ctx.lineWidth = 3.6 / projScale;
+          ctx.shadowColor = "#ffffff";
+          ctx.shadowBlur = 10;
+          ctx.strokeText("R", localXR, localTextY);
+          ctx.strokeText("A", localXA, localTextY);
+          ctx.strokeText("G", localXG, localTextY);
+          ctx.shadowBlur = 0;
+        }
+
+        // d) Sparkling Diamond Star Glints (✦) at polished letter apexes
+        if (assemblyGlow > 0.25) {
+          const drawStarGlint = (gx: number, gy: number, glintPhase: number) => {
+            const glintAlpha = Math.max(0, Math.sin(glintPhase) * assemblyGlow);
+            if (glintAlpha <= 0.08) return;
+
+            const armLength = fontSize * 0.075 * (0.8 + Math.sin(glintPhase) * 0.35);
+            ctx.save();
+            ctx.strokeStyle = `rgba(255, 255, 255, ${glintAlpha * 0.95})`;
+            ctx.lineWidth = 1.2 / projScale;
+            ctx.beginPath();
+            ctx.moveTo(gx - armLength, gy);
+            ctx.lineTo(gx + armLength, gy);
+            ctx.moveTo(gx, gy - armLength);
+            ctx.lineTo(gx, gy + armLength);
+            ctx.stroke();
+
+            ctx.lineWidth = 0.7 / projScale;
+            const diag = armLength * 0.45;
+            ctx.beginPath();
+            ctx.moveTo(gx - diag, gy - diag);
+            ctx.lineTo(gx + diag, gy + diag);
+            ctx.moveTo(gx - diag, gy + diag);
+            ctx.lineTo(gx + diag, gy - diag);
+            ctx.stroke();
+
+            ctx.fillStyle = `rgba(255, 255, 255, ${glintAlpha})`;
+            ctx.beginPath();
+            ctx.arc(gx, gy, 1.8 / projScale, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          };
+
+          // Glint 1: Top-left apex of 'R'
+          drawStarGlint(localXR - fontSize * 0.22, localTextY - fontSize * 0.34, globalTimer * 2.4);
+          // Glint 2: Apex of 'A'
+          drawStarGlint(localXA, localTextY - fontSize * 0.37, globalTimer * 2.4 + 2.09);
+          // Glint 3: Top curve of 'G'
+          drawStarGlint(localXG + fontSize * 0.18, localTextY - fontSize * 0.33, globalTimer * 2.4 + 4.18);
+        }
+
+        ctx.restore();
+      }
 
       // 2. RENDER CONTINUOUSLY ORBITING HALO PARTICLES AROUND RAG ("eske banne ke baad points jo around ghoomte rahe")
       if (convergenceProgress > 0.6) {
@@ -501,37 +600,21 @@ export default function VectorPointGalaxyCanvas({
           if (screenZ <= 15) continue;
 
           const scale = fov / screenZ;
-          let screenX = width / 2 + rotX * scale + mouseRef.current.tiltX * 0.25;
-          let screenY = height / 2 + rotY * scale + mouseRef.current.tiltY * 0.25;
+          const screenX = width / 2 + rotX * scale;
+          const screenY = height / 2 + rotY * scale;
 
           if (!Number.isFinite(screenX) || !Number.isFinite(screenY)) continue;
 
-          // Torch effect interaction with orbiting particles
-          let torchBoost = 0;
-          if (isTorchActive) {
-            const dx = screenX - torchX;
-            const dy = screenY - torchY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist < torchRadius) {
-              torchBoost = (1 - dist / torchRadius);
-              const pushAngle = Math.atan2(dy, dx);
-              screenX += Math.cos(pushAngle) * (torchBoost * 22);
-              screenY += Math.sin(pushAngle) * (torchBoost * 22);
-              torchLitParticles.push({ x: screenX, y: screenY });
-            }
-          }
-
           // Solid, crisp, and bright stardust rendering ("solid type me samajh")
           const isFront = rotZ > 0;
-          const currentSize = hp.size * scale * (isFront ? 1.25 : 0.95) * (1 + torchBoost * 0.6);
+          const currentSize = hp.size * scale * (isFront ? 1.25 : 0.95);
 
           ctx.beginPath();
           ctx.arc(screenX, screenY, Math.max(1.1, currentSize), 0, Math.PI * 2);
 
           // Solid bright white with radiant bloom
           ctx.shadowColor = "#ffffff";
-          ctx.shadowBlur = isFront ? Math.max(5, 8 * assemblyGlow + 8 * torchBoost) : 2;
+          ctx.shadowBlur = isFront ? Math.max(5, 8 * assemblyGlow) : 2;
           ctx.fillStyle = isFront ? "#ffffff" : "rgba(255, 255, 255, 0.85)";
 
           ctx.fill();
@@ -540,47 +623,36 @@ export default function VectorPointGalaxyCanvas({
         ctx.shadowBlur = 0;
       }
 
-      // Laser lines between nearby torchlit particles
-      if (torchLitParticles.length > 1) {
-        ctx.lineWidth = 0.8;
-        const maxLines = Math.min(torchLitParticles.length, 25);
-
-        for (let i = 0; i < maxLines; i++) {
-          for (let j = i + 1; j < maxLines; j++) {
-            const p1 = torchLitParticles[i];
-            const p2 = torchLitParticles[j];
-            const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
-
-            if (dist < 40) {
-              const lineAlpha = (1 - dist / 40) * 0.45;
-              ctx.strokeStyle = `rgba(255, 255, 255, ${lineAlpha})`;
-              ctx.beginPath();
-              ctx.moveTo(p1.x, p1.y);
-              ctx.lineTo(p2.x, p2.y);
-              ctx.stroke();
-            }
-          }
-        }
+      if (isVisible) {
+        animationFrameId = requestAnimationFrame(render);
       }
-
-      animationFrameId = requestAnimationFrame(render);
     };
 
+    let isVisible = true;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const wasVisible = isVisible;
+        isVisible = entry.isIntersecting;
+        if (!wasVisible && isVisible) {
+          animationFrameId = requestAnimationFrame(render);
+        }
+      },
+      { threshold: 0.05 }
+    );
+
+    if (canvas) observer.observe(canvas);
     render();
 
     return () => {
+      observer.disconnect();
       window.removeEventListener("resize", handleResize);
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("touchmove", handleTouchMove);
-      window.removeEventListener("mouseleave", handleMouseLeave);
-      window.removeEventListener("touchend", handleMouseLeave);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [interactive]);
+  }, []);
 
   return (
     <div className={`relative w-full h-full overflow-hidden ${className}`}>
-      <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full pointer-events-auto cursor-crosshair" />
+      <canvas ref={canvasRef} className="absolute inset-0 block w-full h-full pointer-events-none" />
     </div>
   );
 }

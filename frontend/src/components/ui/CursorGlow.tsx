@@ -1,24 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export default function CursorGlow() {
-  const [position, setPosition] = useState({ x: -100, y: -100 });
+  const glowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let animationFrameId: number;
     const updateMouse = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = requestAnimationFrame(() => {
+        if (glowRef.current) {
+          glowRef.current.style.transform = `translate3d(${e.clientX - 300}px, ${e.clientY - 300}px, 0)`;
+        }
+      });
     };
-    window.addEventListener("mousemove", updateMouse);
-    return () => window.removeEventListener("mousemove", updateMouse);
+    window.addEventListener("mousemove", updateMouse, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", updateMouse);
+      cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
   return (
-    <div
-      className="pointer-events-none fixed inset-0 z-30 transition-opacity duration-300 hidden md:block"
-      style={{
-        background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(255, 255, 255, 0.08), transparent 80%)`,
-      }}
-    />
+    <div className="pointer-events-none fixed inset-0 z-30 overflow-hidden hidden md:block">
+      <div
+        ref={glowRef}
+        className="w-[600px] h-[600px] rounded-full will-change-transform opacity-60 pointer-events-none"
+        style={{
+          background: "radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%)",
+          transform: "translate3d(-1000px, -1000px, 0)",
+        }}
+      />
+    </div>
   );
 }

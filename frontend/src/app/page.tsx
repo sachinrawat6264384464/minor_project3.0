@@ -23,7 +23,6 @@ import {
   Share2
 } from "lucide-react";
 
-import CursorGlow from "@/components/ui/CursorGlow";
 import FloatingRAGBot from "@/components/ui/FloatingRAGBot";
 import VectorPointGalaxyCanvas from "@/components/landing/VectorPointGalaxyCanvas";
 import CylinderOrbitalShowcase3D from "@/components/landing/CylinderOrbitalShowcase3D";
@@ -36,9 +35,6 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-white selection:text-black relative overflow-x-hidden">
-      {/* Dynamic Cursor Glow */}
-      <CursorGlow />
-
       {/* Floating Corner Grounded RAG Chatbot Widget */}
       <FloatingRAGBot />
 
@@ -251,10 +247,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* =========================================================================
-       * FOOTER: MINIMAL OBSIDIAN ARCHITECTURE WITH GRAND HEADLINE & BRANDING
-       * ========================================================================= */}
-      <footer className="relative z-10 bg-transparent pt-20 pb-12 px-6 md:px-12 text-slate-400 text-xs font-mono">
+      <footer className="relative z-10 bg-transparent pt-20 pb-28 sm:pb-36 px-6 md:px-12 text-slate-400 text-xs font-mono">
         {/* Grand Architecture Question Headline (Moved to Footer in Big Bold Size) */}
         <div className="max-w-5xl mx-auto text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-white text-black text-[11px] font-mono font-bold uppercase tracking-widest rounded-full mb-5 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
@@ -341,11 +334,14 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Massive Watermark / Brand Banner at Bottom of Footer */}
-        <div className="pt-14 pb-2 text-center overflow-hidden pointer-events-none select-none border-t border-white/5 mt-10">
-          <span className="text-3xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white/20 via-white/5 to-transparent font-sans block">
+        {/* Grand Brand Display at Bottom of Footer (High-contrast, unclipped) */}
+        <div className="pt-12 pb-6 text-center select-none border-t border-white/10 mt-10">
+          <span className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black uppercase tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white/80 via-white/50 to-white/20 font-sans block drop-shadow-[0_2px_20px_rgba(255,255,255,0.12)]">
             RESEARCH GAP FINDER
           </span>
+          <p className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.25em] text-slate-400 mt-3">
+            Verifiable Academic Intelligence · Multi-Strategy Hybrid RAG
+          </p>
         </div>
       </footer>
     </div>

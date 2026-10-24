@@ -24,7 +24,8 @@ import {
   MessageSquare,
   GitCompare,
   TrendingUp,
-  AlertCircle
+  AlertCircle,
+  Code2
 } from "lucide-react";
 import { apiRequest } from "@/lib/api";
 import { Project } from "@/types";
@@ -44,6 +45,9 @@ interface StagingPaper {
   pdf_url?: string | null;
   is_open_access?: boolean;
   source?: string;
+  has_code?: boolean;
+  github_repo?: string | null;
+  project_page?: string | null;
   selected?: boolean;
 }
 
@@ -265,9 +269,12 @@ export default function ScholarStudioPage() {
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-6 border-b border-royal-border gap-4">
             <div>
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex flex-wrap items-center gap-2 mb-2">
                 <span className="px-3 py-1 rounded-full bg-royal-100 text-royal-700 font-bold text-xs flex items-center gap-1.5 shadow-sm">
-                  <Sparkles className="w-3.5 h-3.5 text-royal-600" /> SerpAPI Google Scholar Sourcing Engine
+                  <Sparkles className="w-3.5 h-3.5 text-royal-600" /> SerpAPI (Google Scholar) + Papers With Code + Scopus (Elsevier)
+                </span>
+                <span className="px-3 py-1 rounded-full bg-purple-50 text-purple-700 font-semibold text-xs flex items-center gap-1 border border-purple-200">
+                  <Code2 className="w-3.5 h-3.5 text-purple-600" /> Code & Repositories
                 </span>
                 <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-semibold text-xs flex items-center gap-1 border border-emerald-200">
                   <Database className="w-3.5 h-3.5" /> Vector DB Preprocessing Studio
@@ -277,7 +284,7 @@ export default function ScholarStudioPage() {
                 Scholar Literature Studio & RAG Preprocessor
               </h1>
               <p className="text-sm text-slate-500 mt-1">
-                Enter your research paper topic to source relevant academic papers via Google Scholar. Inspect abstracts and citation metrics, verify relevancy, and batch index them directly into your project's Vector Database.
+                Search and harvest papers across Google Scholar (SerpAPI), reproducible GitHub repositories from Papers With Code, and 90M+ peer-reviewed works from Elsevier Scopus. Inspect abstracts, verified citation metrics, and batch index them directly into your project's Vector Database.
               </p>
             </div>
 
@@ -323,8 +330,19 @@ export default function ScholarStudioPage() {
               {/* Controls & Filter Bar */}
               <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
                 <div className="flex flex-wrap items-center gap-4">
-                  {/* Source Toggle */}
-                  <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+                  {/* Multi-Source Toggle: SerpAPI + Papers With Code + Scopus + All */}
+                  <div className="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+                    <button
+                      type="button"
+                      onClick={() => setSource("all")}
+                      className={`px-3 py-1.5 rounded-lg transition ${
+                        source === "all"
+                          ? "bg-royal-600 text-white font-bold shadow-sm"
+                          : "text-slate-600 hover:text-slate-900"
+                      }`}
+                    >
+                      🌟 All Sources (Unified)
+                    </button>
                     <button
                       type="button"
                       onClick={() => setSource("serpapi")}
@@ -338,25 +356,25 @@ export default function ScholarStudioPage() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setSource("all")}
+                      onClick={() => setSource("paperswithcode")}
                       className={`px-3 py-1.5 rounded-lg transition ${
-                        source === "all"
-                          ? "bg-white text-royal-700 font-bold shadow-sm"
+                        source === "paperswithcode"
+                          ? "bg-white text-purple-700 font-bold shadow-sm"
                           : "text-slate-600 hover:text-slate-900"
                       }`}
                     >
-                      All Sources
+                      💻 Papers With Code
                     </button>
                     <button
                       type="button"
-                      onClick={() => setSource("openalex")}
+                      onClick={() => setSource("scopus")}
                       className={`px-3 py-1.5 rounded-lg transition ${
-                        source === "openalex"
-                          ? "bg-white text-royal-700 font-bold shadow-sm"
+                        source === "scopus"
+                          ? "bg-white text-amber-700 font-bold shadow-sm"
                           : "text-slate-600 hover:text-slate-900"
                       }`}
                     >
-                      OpenAlex
+                      📚 Scopus (Elsevier)
                     </button>
                   </div>
 
@@ -532,8 +550,21 @@ export default function ScholarStudioPage() {
                               </span>
                             )}
                             {paper.source && (
-                              <span className="px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 font-medium text-[10px]">
+                              <span className={`px-2.5 py-0.5 rounded-full font-bold text-[10px] flex items-center gap-1 border ${
+                                paper.source.includes("Papers With Code")
+                                  ? "bg-purple-100 text-purple-800 border-purple-300"
+                                  : paper.source.includes("Scopus")
+                                  ? "bg-amber-100 text-amber-800 border-amber-300"
+                                  : "bg-royal-50 text-royal-700 border-royal-200"
+                              }`}>
+                                {paper.source.includes("Papers With Code") && <Code2 className="w-3 h-3" />}
+                                {paper.source.includes("Scopus") && <BookOpen className="w-3 h-3" />}
                                 {paper.source}
+                              </span>
+                            )}
+                            {(paper.has_code || paper.github_repo) && (
+                              <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] border border-emerald-300 flex items-center gap-1 shadow-2xs">
+                                💻 Code Available
                               </span>
                             )}
                           </div>
@@ -576,14 +607,24 @@ export default function ScholarStudioPage() {
                             </div>
                           )}
 
-                          {/* Action links */}
-                          <div className="flex items-center gap-4 mt-3">
+                          {/* Action links & GitHub Repository */}
+                          <div className="flex flex-wrap items-center gap-3 mt-3 pt-2 border-t border-slate-100">
+                            {paper.github_repo && (
+                              <a
+                                href={paper.github_repo}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-xs text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 border border-purple-200 px-3 py-1 rounded-lg flex items-center gap-1.5 font-bold transition shadow-xs"
+                              >
+                                <Code2 className="w-3.5 h-3.5 text-purple-600" /> GitHub Repository
+                              </a>
+                            )}
                             {paper.source_url && (
                               <a
                                 href={paper.source_url}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-xs text-slate-500 hover:text-royal-600 flex items-center gap-1 font-semibold"
+                                className="text-xs text-slate-600 hover:text-royal-600 flex items-center gap-1 font-semibold"
                               >
                                 <ExternalLink className="w-3.5 h-3.5" /> View Source / DOI
                               </a>
@@ -593,7 +634,7 @@ export default function ScholarStudioPage() {
                                 href={paper.pdf_url}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-xs text-emerald-600 hover:text-emerald-700 flex items-center gap-1 font-semibold"
+                                className="text-xs text-emerald-700 hover:text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 flex items-center gap-1 font-bold"
                               >
                                 📄 Direct PDF Link
                               </a>

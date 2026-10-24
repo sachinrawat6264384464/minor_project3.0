@@ -38,8 +38,9 @@ module.exports = {
         },
         white: '#FFFFFF',
         offwhite: '#FAFAFC',
-        canvas: '#8C8C8C',
-        border: '#000000',
+        canvas: '#F8FAFC',
+        border: '#E2E8F0',
+        'royal-border': '#E2E8F0',
       },
       fontFamily: {
         sans: ['Space Grotesk', 'Inter', 'sans-serif'],

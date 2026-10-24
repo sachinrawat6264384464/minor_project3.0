@@ -31,6 +31,8 @@ class Settings(BaseSettings):
     # External APIs
     SERPAPI_API_KEY: Optional[str] = None
     SEMANTIC_SCHOLAR_API_KEY: Optional[str] = None
+    SCOPUS_API_KEY: Optional[str] = None
+    PAPERSWITHCODE_API_KEY: Optional[str] = None
     # Models & AI Providers
     AI_PROVIDER: str = "openai"  # "openai" | "gemini" | "groq" | "ollama"
     OPENAI_API_KEY: Optional[str] = None

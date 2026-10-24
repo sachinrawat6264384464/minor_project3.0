@@ -91,7 +91,10 @@ export default function GlobalPapersPage() {
                   onChange={(e) => setSource(e.target.value)}
                   className="px-3 py-1.5 bg-white border border-slate-300 rounded-lg outline-none font-semibold text-slate-700"
                 >
-                  <option value="all">All Academic Providers (Unified)</option>
+                  <option value="all">🌟 All Academic Providers (Unified)</option>
+                  <option value="serpapi">Google Scholar (SerpAPI)</option>
+                  <option value="paperswithcode">💻 Papers With Code (Code & Models)</option>
+                  <option value="scopus">📚 Scopus (Elsevier Peer-Reviewed)</option>
                   <option value="openalex">OpenAlex API</option>
                   <option value="semanticscholar">Semantic Scholar API</option>
                 </select>
@@ -120,9 +123,25 @@ export default function GlobalPapersPage() {
                     </span>
                     {item.year && <span className="text-xs text-slate-400">• Year: {item.year}</span>}
                     <span className="text-xs text-slate-400">• Citations: {item.citation_count || 0}</span>
+                    {item.source && (
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                        item.source.includes("Papers With Code")
+                          ? "bg-purple-100 text-purple-800"
+                          : item.source.includes("Scopus")
+                          ? "bg-amber-100 text-amber-800"
+                          : "bg-blue-100 text-blue-800"
+                      }`}>
+                        {item.source}
+                      </span>
+                    )}
                     {item.is_open_access && (
                       <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">
                         OPEN ACCESS PDF
+                      </span>
+                    )}
+                    {(item.has_code || item.github_repo) && (
+                      <span className="px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 text-[10px] font-bold">
+                        💻 CODE REPO
                       </span>
                     )}
                   </div>
@@ -139,6 +158,16 @@ export default function GlobalPapersPage() {
                   >
                     <Plus className="w-4 h-4" /> Save to Workspace
                   </button>
+                  {item.github_repo && (
+                    <a
+                      href={item.github_repo}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-4 py-2 rounded-xl bg-purple-50 text-purple-700 hover:bg-purple-100 font-semibold text-xs border border-purple-200 flex items-center justify-center gap-1.5"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" /> View GitHub Code
+                    </a>
+                  )}
                   {item.source_url && (
                     <a
                       href={item.source_url}

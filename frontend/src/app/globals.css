@@ -120,35 +120,39 @@ body {
   letter-spacing: 0.04em;
 }
 
-/* Preserved workspace card classes mapped to brutalist concrete */
+/* Modern Royal Glassmorphism Cards */
 .glass-royal-card {
-  background: #FFFFFF;
-  border: 2px solid #000000;
-  box-shadow: 5px 5px 0px 0px #000000;
-  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
+  border-radius: 1rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-royal-card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 7px 7px 0px 0px #000000;
+  border-color: #CBD5E1;
+  box-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.10);
 }
 
 .glass-royal-sidebar {
-  background: #181A1D;
+  background: #0B1120;
   color: #FFFFFF;
-  border-right: 2px solid #000000;
+  border-right: 1px solid #1E293B;
 }
 
 .bg-royal-gradient {
-  background: #000000;
+  background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 50%, #3B82F6 100%);
 }
 
 .bg-royal-pill {
-  background: #000000;
+  background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
 }
 
 .text-royal-gradient {
-  color: #000000;
+  background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Custom Brutalist scrollbars */

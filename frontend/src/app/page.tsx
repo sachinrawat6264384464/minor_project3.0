@@ -26,7 +26,7 @@ import {
 import FloatingRAGBot from "@/components/ui/FloatingRAGBot";
 import VectorPointGalaxyCanvas from "@/components/landing/VectorPointGalaxyCanvas";
 import CylinderOrbitalShowcase3D from "@/components/landing/CylinderOrbitalShowcase3D";
-import InteractiveRAGPipelineTimeline from "@/components/landing/InteractiveRAGPipelineTimeline";
+import HighLevelSystemArchitecture3D from "@/components/landing/HighLevelSystemArchitecture3D";
 import VectorSpaceLaserScene from "@/components/landing/VectorSpaceLaserScene";
 import ArchitectureFlowVisualizer from "@/components/landing/ArchitectureFlowVisualizer";
 
@@ -111,10 +111,10 @@ export default function LandingPage() {
         </section>
 
         {/* =========================================================================
-         * SECTION 2: THE R-A-G CORE FORMULA & DYNAMIC TIMELINE (Matching User Image 4)
+         * SECTION 2: HIGH-LEVEL SYSTEM ARCHITECTURE & 3D INTERACTIVE FLOW (5-Tier)
          * ========================================================================= */}
-        <section id="how-rag-works" className="relative z-10 bg-transparent">
-          <InteractiveRAGPipelineTimeline />
+        <section id="system-architecture" className="relative z-10 bg-transparent">
+          <HighLevelSystemArchitecture3D />
         </section>
 
         {/* =========================================================================

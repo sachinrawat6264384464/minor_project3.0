@@ -1,6 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
+import re
+from pydantic import BaseModel
+
 from app.db.session import get_db
 from app.models.user import User
 from app.models.project import Project
@@ -12,6 +15,87 @@ from app.services.llm_service import llm_service
 from app.api.routes.auth import get_current_user
 
 router = APIRouter()
+
+class AssistantQueryRequest(BaseModel):
+    message: str
+    project_id: Optional[str] = None
+
+@router.post("/assistant")
+async def assistant_public_chat(
+    data: AssistantQueryRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Floating AI RAG Bot endpoint with strict security guardrails against credential extraction.
+    """
+    msg_clean = data.message.strip().lower()
+
+    # Security Guardrail: Intercept any attempt to ask for passwords or hashes
+    password_patterns = [
+        r"\bpassword\b",
+        r"\bpasswords\b",
+        r"\bpassw\b",
+        r"\bkisi ka password\b",
+        r"\badmin pass\b",
+        r"\bsecret key\b",
+        r"\bhashed_password\b",
+        r"\bcredentials\b",
+        r"\bshow password\b",
+        r"\btell me password\b"
+    ]
+    for pattern in password_patterns:
+        if re.search(pattern, msg_clean):
+            return {
+                "id": "sec-guardrail",
+                "role": "assistant",
+                "content": "🔒 Security Protocol Enforced: User passwords and authentication hashes are encrypted (bcrypt) and protected under zero-knowledge system isolation. System policy strictly prohibits disclosing credentials or private account data.",
+                "citations": []
+            }
+
+    # If asking for account creation / login guidance
+    if any(k in msg_clean for k in ["create account", "register", "sign up", "login", "signin", "kese banaye", "account banana"]):
+        return {
+            "id": "auth-guide",
+            "role": "assistant",
+            "content": "Welcome! You can log in or create your candidate research account directly inside this chat window using the tabs above (🔑 Log In / ✨ Create Account), or simply enter your username and password below.",
+            "citations": []
+        }
+
+    # Retrieval from existing project or literature demo
+    project = None
+    if data.project_id:
+        project = db.query(Project).filter(Project.id == data.project_id).first()
+    if not project:
+        project = db.query(Project).first()
+
+    if project:
+        chunks = rag_orchestrator.retrieve_context(
+            db=db,
+            project_id=project.id,
+            query=data.message,
+            strategy="hybrid",
+            top_k=4
+        )
+        if chunks and len(chunks) > 0:
+            citations = citation_builder.build_citations(chunks)
+            llm_res = await llm_service.generate_grounded_answer(
+                query=data.message,
+                retrieved_passages=chunks
+            )
+            return {
+                "id": f"asst-{project.id}",
+                "role": "assistant",
+                "content": llm_res.get("answer", ""),
+                "citations": citations
+            }
+
+    # Fallback when query is not in database
+    return {
+        "id": "not-in-db",
+        "role": "assistant",
+        "content": "ℹ️ Target concept not found in the indexed literature database.\n\nPlease upload or ingest relevant papers in your workspace, or try asking about 'Vision Transformers', 'Hybrid RAG RRF', or '9-Stage Gap Discovery Engine'.",
+        "citations": []
+    }
 
 @router.post("", response_model=MessageResponse)
 async def chat_with_collection(

@@ -20,11 +20,26 @@ def init_db(db: Session) -> None:
     # Create tables if not present
     Base.metadata.create_all(bind=engine)
 
+    # Safe schema migration for users table in Postgres / Neon
+    if not settings.DATABASE_URL.startswith("sqlite"):
+        try:
+            with engine.connect() as conn:
+                conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS username VARCHAR;"))
+                conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR DEFAULT 'researcher';"))
+                conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS failed_login_attempts INTEGER DEFAULT 0;"))
+                conn.execute(text("ALTER TABLE users ADD COLUMN IF NOT EXISTS locked_until TIMESTAMP WITH TIME ZONE;"))
+                conn.commit()
+                print("Users table RBAC columns synchronized on PostgreSQL.")
+        except Exception as e:
+            print(f"Schema synchronization note: {e}")
+
     # Create default demo/test user if not exists
     user = db.query(User).filter(User.email == "scholar@example.com").first()
     if not user:
         demo_user = User(
             email="scholar@example.com",
+            username="dralex",
+            role="researcher",
             hashed_password=get_password_hash("ResearchPass2026!"),
             full_name="Dr. Alex Vance",
             is_active=True,

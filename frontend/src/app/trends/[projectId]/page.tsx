@@ -96,7 +96,7 @@ export default function TrendsPage() {
         setSelectedNode(positionedNodes[0]);
       }
     } catch (err) {
-      console.error("Graph fetch note:", err);
+      console.info("Using demonstration graph for workspace:", projectId);
       // Fallback interactive data
       const fallbackNodes: GraphNode[] = [
         { id: "root", label: "Research Project Root", type: "Project", val: 24, x: 320, y: 240 },

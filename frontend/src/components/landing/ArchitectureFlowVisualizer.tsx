@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { 
   Sparkles, 
   Search, 
@@ -16,7 +15,10 @@ import {
   TrendingUp,
   FileCode,
   Radio,
-  Share2
+  Share2,
+  Award,
+  Zap,
+  Target
 } from "lucide-react";
 import Link from "next/link";
 
@@ -30,6 +32,8 @@ interface ArchStage {
   inputs: string;
   outputs: string;
   verifiableMetric: string;
+  accentColor: string;
+  tagColor: string;
 }
 
 const ARCH_STAGES: ArchStage[] = [
@@ -42,7 +46,9 @@ const ARCH_STAGES: ArchStage[] = [
     mechanism: "Simultaneous querying across OpenAlex, Semantic Scholar, and SerpAPI Google Scholar API.",
     inputs: "Search queries (e.g., 'Vision Transformers under real-world noise')",
     outputs: "Standardized paper metadata JSON + Open-access PDF download URLs",
-    verifiableMetric: "100% DOI deduplication across all three sources"
+    verifiableMetric: "100% DOI deduplication across all three sources",
+    accentColor: "border-cyan-500/30",
+    tagColor: "bg-cyan-500/15 text-cyan-300 border-cyan-400/40"
   },
   {
     id: 2,
@@ -53,7 +59,9 @@ const ARCH_STAGES: ArchStage[] = [
     mechanism: "Regex heuristic heading detectors classify: Abstract, Methods, Results, Limitations, and Future Work with a 500-word sliding window and 100-word overlap.",
     inputs: "Raw PDF binary streams",
     outputs: "Document chunks tagged with [SectionName, PageNumber, DOI, Title]",
-    verifiableMetric: "Page-level provenance maintained for every 500-word passage"
+    verifiableMetric: "Page-level provenance maintained for every 500-word passage",
+    accentColor: "border-sky-500/30",
+    tagColor: "bg-sky-500/15 text-sky-300 border-sky-400/40"
   },
   {
     id: 3,
@@ -64,7 +72,9 @@ const ARCH_STAGES: ArchStage[] = [
     mechanism: "Dense 384-dimensional BAAI/bge-small-en-v1.5 embeddings indexed into Neon Serverless pgvector alongside BM25Okapi inverted index.",
     inputs: "Document text passages",
     outputs: "HNSW vector graph index + BM25 token frequencies",
-    verifiableMetric: "Sub-15ms vector cosine retrieval on Neon pgvector"
+    verifiableMetric: "Sub-15ms vector cosine retrieval on Neon pgvector",
+    accentColor: "border-blue-500/30",
+    tagColor: "bg-blue-500/15 text-blue-300 border-blue-400/40"
   },
   {
     id: 4,
@@ -75,7 +85,9 @@ const ARCH_STAGES: ArchStage[] = [
     mechanism: "RRF score = sum( 1 / (60 + rank_m(d)) ). Candidate pairs are subsequently rescored by BAAI/bge-reranker-base.",
     inputs: "Dual top-30 candidate chunk lists",
     outputs: "Top-5 unified high-precision candidate chunks",
-    verifiableMetric: "+38% citation retrieval precision vs single-strategy RAG"
+    verifiableMetric: "+38% citation retrieval precision vs single-strategy RAG",
+    accentColor: "border-indigo-500/30",
+    tagColor: "bg-indigo-500/15 text-indigo-300 border-indigo-400/40"
   },
   {
     id: 5,
@@ -86,7 +98,9 @@ const ARCH_STAGES: ArchStage[] = [
     mechanism: "LLM synthesis prompt enforces strict [Source X, Page Y] syntax. Any missing evidence triggers explicit 'Insufficient Evidence' fallback.",
     inputs: "User research query + RRF top-5 chunks",
     outputs: "Verified text response + interactive Citation Cards (DOI, Page, Excerpt)",
-    verifiableMetric: "0% hallucinated citations; 100% verified against indexed PDF"
+    verifiableMetric: "0% hallucinated citations; 100% verified against indexed PDF",
+    accentColor: "border-violet-500/30",
+    tagColor: "bg-violet-500/15 text-violet-300 border-violet-400/40"
   },
   {
     id: 6,
@@ -97,7 +111,9 @@ const ARCH_STAGES: ArchStage[] = [
     mechanism: "Categorizes into: Generalization Weaknesses, Inadequate Baseline Comparisons, Reproducibility Limitations, and Dataset Diversity Gaps.",
     inputs: "Limitation passages across multi-paper workspace",
     outputs: "Candidate Research Gap cards with confidence scores",
-    verifiableMetric: "Automated extraction of cross-paper methodological conflicts"
+    verifiableMetric: "Automated extraction of cross-paper methodological conflicts",
+    accentColor: "border-amber-500/30",
+    tagColor: "bg-amber-500/15 text-amber-300 border-amber-400/40"
   },
   {
     id: 7,
@@ -108,7 +124,9 @@ const ARCH_STAGES: ArchStage[] = [
     mechanism: "Automated counter-queries dispatched to Google Scholar / SerpAPI searching for recent solutions published in subsequent years.",
     inputs: "Candidate gap limitation assertion",
     outputs: "Counter-Evidence Badge (Verified Novel vs Solved Prior Art)",
-    verifiableMetric: "Prevents scholars from pursuing already solved research problems"
+    verifiableMetric: "Prevents scholars from pursuing already solved research problems",
+    accentColor: "border-emerald-500/30",
+    tagColor: "bg-emerald-500/15 text-emerald-300 border-emerald-400/40"
   },
   {
     id: 8,
@@ -119,7 +137,9 @@ const ARCH_STAGES: ArchStage[] = [
     mechanism: "Minimum Euclidean & Cosine distance from proposed hypothesis to existing literature clusters generates 0-100% score + ablation design.",
     inputs: "Verified candidate gap hypothesis",
     outputs: "Novelty percentage + step-by-step experiment protocol",
-    verifiableMetric: "Quantitative 0-100% score mapped to IEEE publication criteria"
+    verifiableMetric: "Quantitative 0-100% score mapped to IEEE publication criteria",
+    accentColor: "border-teal-500/30",
+    tagColor: "bg-teal-500/15 text-teal-300 border-teal-400/40"
   },
   {
     id: 9,
@@ -130,188 +150,191 @@ const ARCH_STAGES: ArchStage[] = [
     mechanism: "Direct generation of IEEEtran .tex files with complete BibTeX bibliography and instant 1-click push to Overleaf cloud.",
     inputs: "Workspace papers + verified gaps + chat synthesis",
     outputs: "IEEE .tex manuscript + BibTeX file + PDF report",
-    verifiableMetric: "1-click compile on Overleaf without syntax errors"
+    verifiableMetric: "1-click compile on Overleaf without syntax errors",
+    accentColor: "border-purple-500/30",
+    tagColor: "bg-purple-500/15 text-purple-300 border-purple-400/40"
   }
 ];
 
 export default function ArchitectureFlowVisualizer() {
-  const [activeStageId, setActiveStageId] = useState(1);
-  const activeStage = ARCH_STAGES.find((s) => s.id === activeStageId) || ARCH_STAGES[0];
+  const scrollToStage = (id: number) => {
+    const el = document.getElementById(`stack-stage-${id}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
 
   return (
-    <div className="relative w-full py-20 px-4 md:px-8 bg-transparent text-white font-sans overflow-hidden">
+    <div className="relative w-full py-20 px-4 sm:px-6 md:px-8 bg-transparent text-white font-sans overflow-visible select-none">
       
       {/* 3D Perspective Grid Ambient */}
-      <div className="absolute inset-x-0 bottom-0 h-[320px] perspective-grid-floor-dense opacity-25 pointer-events-none" />
+      <div className="absolute inset-x-0 bottom-0 h-[420px] perspective-grid-floor-dense opacity-20 pointer-events-none" />
 
       <div className="max-w-6xl mx-auto relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white text-black text-[11px] font-mono font-bold uppercase tracking-widest rounded-full mb-3 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
-            <Cpu className="w-3.5 h-3.5" />
-            END-TO-END SYSTEM FLOW & ARCHITECTURE
+        <div className="text-center max-w-3xl mx-auto mb-10">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white text-black text-[11px] font-mono font-black uppercase tracking-widest rounded-full mb-3 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
+            <Cpu className="w-3.5 h-3.5 fill-black" />
+            9-STAGE SCIENTIFIC SYNTHESIS // STACKING CARDS ENGINE
           </div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-white">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-white leading-tight">
             THE 9-STAGE <span className="underline decoration-white decoration-4 underline-offset-8">RESEARCH GAP</span> LIFECYCLE
           </h2>
 
-          <p className="text-slate-400 text-xs sm:text-sm mt-3">
-            From raw Google Scholar PDFs to verifiable citation cards, counter-evidence verification, and ready-to-publish IEEE LaTeX manuscripts. Scrub through all 9 internal stages below.
+          <p className="text-slate-300 text-xs sm:text-sm mt-3 leading-relaxed">
+            From raw Google Scholar PDFs to verifiable citation cards, counter-evidence verification, and camera-ready IEEE LaTeX manuscripts. Scroll down to experience the deck of cards stacking effect.
           </p>
         </div>
 
-        {/* MOVEABLE DYNAMIC TIMELINE SCRUBBER */}
-        <div className="mb-10 overflow-x-auto pb-4 scrollbar-none">
-          <div className="flex items-center justify-between min-w-[780px] border-b border-white/20 pb-4 px-2">
-            {ARCH_STAGES.map((stage) => {
-              const isActive = activeStageId === stage.id;
-              const isPast = stage.id < activeStageId;
-
-              return (
-                <button
-                  key={stage.id}
-                  onClick={() => setActiveStageId(stage.id)}
-                  className="flex flex-col items-center gap-2 group cursor-pointer transition-all"
-                >
-                  {/* Stage Number Node */}
-                  <div 
-                    className={`w-9 h-9 rounded-full flex items-center justify-center font-mono text-xs font-bold transition-all duration-200 ${
-                      isActive
-                        ? "bg-white text-black shadow-[0_0_20px_#ffffff] scale-110"
-                        : isPast
-                        ? "bg-white/30 text-white border border-white"
-                        : "bg-black text-slate-400 border border-white/20 group-hover:border-white group-hover:text-white"
-                    }`}
-                  >
-                    0{stage.id}
-                  </div>
-
-                  {/* Stage Category Pill */}
-                  <span 
-                    className={`text-[9px] font-mono uppercase tracking-wider transition ${
-                      isActive ? "text-white font-bold" : "text-slate-400 group-hover:text-slate-300"
-                    }`}
-                  >
-                    {stage.category}
-                  </span>
-                </button>
-              );
-            })}
+        {/* QUICK JUMP STAGE SCRUBBER */}
+        <div className="sticky top-20 z-40 mb-8 py-2 px-3 rounded-full bg-black/85 backdrop-blur-xl border border-white/20 shadow-xl max-w-3xl mx-auto flex items-center justify-between overflow-x-auto scrollbar-none gap-2">
+          <span className="text-[10px] font-mono text-slate-400 px-2 shrink-0 hidden sm:inline">
+            Stages:
+          </span>
+          <div className="flex items-center gap-1.5 w-full justify-between">
+            {ARCH_STAGES.map((stage) => (
+              <button
+                key={stage.id}
+                onClick={() => scrollToStage(stage.id)}
+                className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold transition-all bg-white/10 hover:bg-white hover:text-black text-slate-200 border border-white/15 shrink-0"
+                title={stage.title}
+              >
+                0{stage.id}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* ACTIVE STAGE ARCHITECTURAL SHOWCASE CARD */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeStage.id}
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.98 }}
-            transition={{ duration: 0.2 }}
-            className="p-6 md:p-10 rounded-2xl bg-white/5 border border-white/25 backdrop-blur-md shadow-[0_0_50px_rgba(255,255,255,0.06)] text-left"
-          >
-            <div className="flex flex-col lg:flex-row items-start justify-between gap-8">
-              
-              {/* Left Side: Summary & Mechanism */}
-              <div className="lg:w-3/5 space-y-5">
-                <div className="flex items-center gap-3">
-                  <span className="px-3 py-1 bg-white text-black font-mono font-bold text-xs rounded-full uppercase shadow-[0_0_12px_rgba(255,255,255,0.6)]">
-                    {activeStage.stageCode} // {activeStage.category}
-                  </span>
-                  <span className="text-xs font-mono text-slate-400">
-                    Stage {activeStage.id} of 9
-                  </span>
-                </div>
+        {/* =========================================================================
+         * STACKING CARDS DECK CONTAINER
+         * Each card sticks to the top with a staggered offset, stacking gracefully!
+         * ========================================================================= */}
+        <div className="relative pb-40 pt-4">
+          {ARCH_STAGES.map((stage, idx) => {
+            // Offset so each card header is visible as they stack on top of each other
+            const topOffset = 100 + idx * 22;
+            const zIndex = 10 + idx;
 
-                <h3 className="text-2xl sm:text-3xl font-black text-white font-sans leading-tight">
-                  {activeStage.title}
-                </h3>
+            return (
+              <div
+                key={stage.id}
+                id={`stack-stage-${stage.id}`}
+                className="sticky transition-all duration-300 mb-28 sm:mb-40"
+                style={{
+                  top: `${topOffset}px`,
+                  zIndex: zIndex,
+                }}
+              >
+                {/* The Stacking Card */}
+                <div 
+                  className={`relative w-full rounded-2xl bg-[#080B14] border ${stage.accentColor} border-white/25 p-5 sm:p-7 md:p-8 shadow-[0_-20px_50px_rgba(0,0,0,0.98),0_0_30px_rgba(255,255,255,0.06)] hover:border-white/50 transition-all group backdrop-blur-xl`}
+                >
+                  {/* Stepped Tab Top Index Rim */}
+                  <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent rounded-t-2xl" />
 
-                <p className="text-sm text-slate-200 leading-relaxed font-sans">
-                  {activeStage.summary}
-                </p>
-
-                <div className="p-4 bg-black/70 border border-white/20 rounded-xl space-y-2">
-                  <span className="text-[11px] font-mono text-white font-bold uppercase tracking-wider block">
-                    Underlying Engineering Mechanism:
-                  </span>
-                  <p className="text-xs text-slate-300 leading-relaxed font-sans">
-                    {activeStage.mechanism}
-                  </p>
-                </div>
-              </div>
-
-              {/* Right Side: I/O Specifications & Metric Card */}
-              <div className="lg:w-2/5 w-full space-y-4">
-                
-                {/* Inputs & Outputs Card */}
-                <div className="p-4 bg-black/90 border border-white/20 rounded-xl space-y-3 font-mono text-xs">
-                  <div>
-                    <span className="text-slate-400 block mb-1 text-[10px] uppercase tracking-wider">
-                      ➔ System Inputs:
-                    </span>
-                    <div className="p-2 bg-white/5 border border-white/10 rounded text-slate-200 text-[11px]">
-                      {activeStage.inputs}
+                  {/* Stage Header Tab Strip: Always clearly visible when stacked in deck */}
+                  <div className="flex items-center justify-between pb-3 mb-4 border-b border-white/10 text-[10px] font-mono">
+                    <div className="flex items-center gap-2">
+                      <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border ${stage.tagColor}`}>
+                        {stage.stageCode} // {stage.category}
+                      </span>
+                      <span className="font-bold text-white uppercase tracking-wider truncate max-w-[200px] sm:max-w-none">
+                        {stage.title}
+                      </span>
                     </div>
+                    <span className="text-slate-400 font-mono shrink-0">
+                      Deck {stage.id} / 09
+                    </span>
                   </div>
 
-                  <div>
-                    <span className="text-slate-400 block mb-1 text-[10px] uppercase tracking-wider">
-                      ➔ System Outputs:
-                    </span>
-                    <div className="p-2 bg-white/5 border border-white/10 rounded text-slate-200 text-[11px]">
-                      {activeStage.outputs}
-                    </div>
+                  {/* Stage Number Floating Watermark (Desktop) */}
+                  <div className="absolute top-10 right-6 text-5xl sm:text-6xl font-black font-mono text-white/5 pointer-events-none select-none">
+                    0{stage.id}
                   </div>
+
+                  <div className="flex flex-col lg:flex-row items-start justify-between gap-6 sm:gap-8 relative z-10">
+                    
+                    {/* Left Column: Stage Info & Engineering Details */}
+                    <div className="lg:w-3/5 space-y-4">
+                      
+                      {/* Title */}
+                      <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-white font-sans leading-tight">
+                        {stage.title}
+                      </h3>
+
+                      {/* Summary */}
+                      <p className="text-xs sm:text-sm text-slate-100 leading-relaxed font-sans">
+                        {stage.summary}
+                      </p>
+
+                      {/* Underlying Engineering Mechanism Box */}
+                      <div className="p-3.5 sm:p-4 bg-transparent border border-white/20 rounded-xl space-y-1.5">
+                        <span className="text-[10px] font-mono text-cyan-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                          <Zap className="w-3.5 h-3.5 text-cyan-400" />
+                          Underlying Engineering Mechanism:
+                        </span>
+                        <p className="text-xs text-slate-200 leading-relaxed font-sans font-normal">
+                          {stage.mechanism}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Right Column: I/O Specifications & Quality Guarantee */}
+                    <div className="lg:w-2/5 w-full space-y-3.5">
+                      
+                      {/* Inputs & Outputs Card */}
+                      <div className="p-3.5 sm:p-4 bg-transparent border border-white/20 rounded-xl space-y-2.5 font-mono text-xs">
+                        <div>
+                          <span className="text-slate-400 block mb-1 text-[10px] uppercase tracking-wider font-bold">
+                            ➔ System Inputs:
+                          </span>
+                          <div className="p-2 bg-transparent border border-white/10 rounded text-slate-100 text-[11px] leading-snug">
+                            {stage.inputs}
+                          </div>
+                        </div>
+
+                        <div>
+                          <span className="text-slate-400 block mb-1 text-[10px] uppercase tracking-wider font-bold">
+                            ➔ System Outputs:
+                          </span>
+                          <div className="p-2 bg-transparent border border-white/10 rounded text-slate-100 text-[11px] leading-snug">
+                            {stage.outputs}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Verifiable Academic Quality Guarantee */}
+                      <div className="p-3.5 sm:p-4 bg-transparent border border-emerald-400/40 text-white rounded-xl space-y-0.5">
+                        <span className="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          Verifiable Quality Guarantee:
+                        </span>
+                        <p className="text-xs font-semibold font-sans text-slate-100 leading-snug">
+                          {stage.verifiableMetric}
+                        </p>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  {/* Bottom Card Footer Bar */}
+                  <div className="mt-5 pt-3.5 border-t border-white/15 flex items-center justify-between text-[10px] font-mono text-slate-300">
+                    <span className="text-slate-400">
+                      ResearchGap.ai Autonomous Pipeline
+                    </span>
+                    <span className="text-white font-bold flex items-center gap-1">
+                      Stage 0{stage.id} Verified ✓
+                    </span>
+                  </div>
+
                 </div>
-
-                {/* Verifiable Academic Metric Badge */}
-                <div className="p-4 bg-white text-black rounded-xl shadow-[0_0_25px_rgba(255,255,255,0.4)] space-y-1">
-                  <span className="text-[10px] font-mono font-black uppercase tracking-wider block">
-                    ★ Verifiable Quality Guarantee:
-                  </span>
-                  <p className="text-xs font-bold font-sans">
-                    {activeStage.verifiableMetric}
-                  </p>
-                </div>
-
               </div>
-
-            </div>
-
-            {/* Bottom Stepper Navigation */}
-            <div className="mt-8 pt-6 border-t border-white/15 flex items-center justify-between">
-              <button
-                disabled={activeStageId === 1}
-                onClick={() => setActiveStageId((prev) => Math.max(1, prev - 1))}
-                className="px-4 py-2 rounded-lg border border-white/20 text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-white hover:border-white transition disabled:opacity-30 disabled:pointer-events-none"
-              >
-                ← Previous Stage
-              </button>
-
-              <div className="hidden sm:flex items-center gap-1.5 font-mono text-xs text-slate-400">
-                <span>Fast-forward lifecycle:</span>
-                <button onClick={() => setActiveStageId(1)} className="hover:text-white px-1">Sourcing</button>
-                <span>·</span>
-                <button onClick={() => setActiveStageId(3)} className="hover:text-white px-1">Hybrid RRF</button>
-                <span>·</span>
-                <button onClick={() => setActiveStageId(7)} className="hover:text-white px-1">Counter-Evidence</button>
-                <span>·</span>
-                <button onClick={() => setActiveStageId(9)} className="hover:text-white px-1">Overleaf LaTeX</button>
-              </div>
-
-              <button
-                disabled={activeStageId === ARCH_STAGES.length}
-                onClick={() => setActiveStageId((prev) => Math.min(ARCH_STAGES.length, prev + 1))}
-                className="px-4 py-2 rounded-lg bg-white text-black text-xs font-mono font-bold uppercase tracking-wider hover:bg-slate-200 transition shadow-[0_0_15px_rgba(255,255,255,0.4)] disabled:opacity-30 disabled:pointer-events-none flex items-center gap-1.5"
-              >
-                Next Stage →
-              </button>
-            </div>
-          </motion.div>
-        </AnimatePresence>
+            );
+          })}
+        </div>
 
       </div>
     </div>

@@ -322,14 +322,14 @@ export default function HighLevelSystemArchitecture3D() {
                   1
                 </span>
                 <div>
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wide">
+                  <h3 className="text-sm sm:text-base font-bold text-white uppercase tracking-wide">
                     Tier 1: Client Presentation Layer
                   </h3>
-                  <span className="text-[11px] font-mono text-neutral-400">Next.js 15 App Router • React 19 • Tailwind CSS • Zustand • TanStack Query</span>
+                  <span className="text-[11px] font-mono text-slate-300 font-medium">Next.js 15 App Router • React 19 • Tailwind CSS • Zustand • TanStack Query</span>
                 </div>
               </div>
 
-              <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-transparent border border-white/40 text-neutral-200 font-bold w-fit shadow-[0_0_10px_rgba(255,255,255,0.06)]">
+              <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-white/10 border border-white/40 text-slate-100 font-bold w-fit shadow-[0_0_10px_rgba(255,255,255,0.06)]">
                 HTTPS / REST API + JWT Bearer
               </span>
             </div>
@@ -374,16 +374,16 @@ export default function HighLevelSystemArchitecture3D() {
               ].map((item, idx) => (
                 <div 
                   key={idx} 
-                  className={`p-2.5 rounded-lg bg-transparent border transition-all duration-200 ${
+                  className={`p-2.5 rounded-lg bg-white/[0.04] border transition-all duration-200 ${
                     item.isRelevant 
-                      ? "border-neutral-800/80 hover:border-white/60 hover:shadow-[0_0_12px_rgba(255,255,255,0.12)] opacity-100" 
-                      : "border-neutral-800/30 opacity-30"
+                      ? "border-white/20 hover:border-white/60 hover:bg-white/[0.08] hover:shadow-[0_0_12px_rgba(255,255,255,0.12)] opacity-100" 
+                      : "border-white/10 opacity-30"
                   }`}
                 >
                   <h4 className="font-bold text-white text-xs">{item.title}</h4>
-                  <span className="text-[10px] font-mono text-neutral-300 block my-0.5">{item.route}</span>
-                  <span className="text-[9px] font-mono text-neutral-400 block mb-1 text-white/70">{item.tech}</span>
-                  <p className="text-[11px] text-neutral-400 leading-tight">{item.desc}</p>
+                  <span className="text-[10px] font-mono text-cyan-300 font-semibold block my-0.5">{item.route}</span>
+                  <span className="text-[9px] font-mono text-slate-300 block mb-1 font-medium">{item.tech}</span>
+                  <p className="text-[11px] text-slate-200 leading-snug">{item.desc}</p>
                 </div>
               ))}
             </div>
@@ -435,53 +435,53 @@ export default function HighLevelSystemArchitecture3D() {
                   2
                 </span>
                 <div>
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wide">
+                  <h3 className="text-sm sm:text-base font-bold text-white uppercase tracking-wide">
                     Tier 2: API Gateway & Security Controllers
                   </h3>
-                  <span className="text-[11px] font-mono text-neutral-400">FastAPI 0.111 :8000 • Uvicorn ASGI • Python 3.12</span>
+                  <span className="text-[11px] font-mono text-slate-300 font-medium">FastAPI 0.111 :8000 • Uvicorn ASGI • Python 3.12</span>
                 </div>
               </div>
 
-              <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-transparent border border-white/40 text-neutral-200 font-bold w-fit shadow-[0_0_10px_rgba(255,255,255,0.06)]">
+              <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-white/10 border border-white/40 text-slate-100 font-bold w-fit shadow-[0_0_10px_rgba(255,255,255,0.06)]">
                 Swagger OpenAPI 3.0 /docs
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-              <div className={`p-3 rounded-lg bg-transparent border transition-all duration-200 ${
+              <div className={`p-3 rounded-lg bg-white/[0.04] border transition-all duration-200 ${
                 activePipeline === "ALL" || activePipeline === "INGEST" || activePipeline === "RAG" 
-                  ? "border-neutral-800/80 hover:border-white/50 hover:shadow-[0_0_12px_rgba(255,255,255,0.1)] opacity-100" 
-                  : "border-neutral-800/30 opacity-30"
+                  ? "border-white/20 hover:border-white/60 hover:bg-white/[0.08] hover:shadow-[0_0_12px_rgba(255,255,255,0.1)] opacity-100" 
+                  : "border-white/10 opacity-30"
               }`}>
                 <h4 className="font-bold text-white text-xs mb-1 flex items-center gap-1.5">
-                  <Server className="w-3.5 h-3.5 text-white" /> FastAPI Application Router
+                  <Server className="w-3.5 h-3.5 text-cyan-400" /> FastAPI Application Router
                 </h4>
-                <span className="text-[9px] font-mono text-neutral-400 block mb-1">FastAPI 0.111 • Pydantic v2 • CORS</span>
-                <p className="text-[11px] text-neutral-400 leading-relaxed">Asynchronous routing, CORS middleware, strict Pydantic v2 schemas, and standardized envelopes.</p>
+                <span className="text-[10px] font-mono text-cyan-300 font-semibold block mb-1">FastAPI 0.111 • Pydantic v2 • CORS</span>
+                <p className="text-[11px] text-slate-200 leading-relaxed font-normal">Asynchronous routing, CORS middleware, strict Pydantic v2 schemas, and standardized envelopes.</p>
               </div>
 
-              <div className={`p-3 rounded-lg bg-transparent border transition-all duration-200 ${
+              <div className={`p-3 rounded-lg bg-white/[0.04] border transition-all duration-200 ${
                 activePipeline === "ALL" || activePipeline === "RAG" 
-                  ? "border-neutral-800/80 hover:border-white/50 hover:shadow-[0_0_12px_rgba(255,255,255,0.1)] opacity-100" 
-                  : "border-neutral-800/30 opacity-30"
+                  ? "border-white/20 hover:border-white/60 hover:bg-white/[0.08] hover:shadow-[0_0_12px_rgba(255,255,255,0.1)] opacity-100" 
+                  : "border-white/10 opacity-30"
               }`}>
                 <h4 className="font-bold text-white text-xs mb-1 flex items-center gap-1.5">
-                  <Key className="w-3.5 h-3.5 text-white" /> OAuth2 Security Guard
+                  <Key className="w-3.5 h-3.5 text-amber-400" /> OAuth2 Security Guard
                 </h4>
-                <span className="text-[9px] font-mono text-neutral-400 block mb-1">OAuth2 Password Flow • Bcrypt • JWT</span>
-                <p className="text-[11px] text-neutral-400 leading-relaxed">Bcrypt password hashing, JWT bearer validation, and workspace-level tenant isolation.</p>
+                <span className="text-[10px] font-mono text-amber-300 font-semibold block mb-1">OAuth2 Password Flow • Bcrypt • JWT</span>
+                <p className="text-[11px] text-slate-200 leading-relaxed font-normal">Bcrypt password hashing, JWT bearer validation, and workspace-level tenant isolation.</p>
               </div>
 
-              <div className={`p-3 rounded-lg bg-transparent border transition-all duration-200 ${
+              <div className={`p-3 rounded-lg bg-white/[0.04] border transition-all duration-200 ${
                 activePipeline === "ALL" || activePipeline === "INGEST" || activePipeline === "GAPS" 
-                  ? "border-neutral-800/80 hover:border-white/50 hover:shadow-[0_0_12px_rgba(255,255,255,0.1)] opacity-100" 
-                  : "border-neutral-800/30 opacity-30"
+                  ? "border-white/20 hover:border-white/60 hover:bg-white/[0.08] hover:shadow-[0_0_12px_rgba(255,255,255,0.1)] opacity-100" 
+                  : "border-white/10 opacity-30"
               }`}>
                 <h4 className="font-bold text-white text-xs mb-1 flex items-center gap-1.5">
-                  <Zap className="w-3.5 h-3.5 text-white" /> Async BackgroundTasks Queue
+                  <Zap className="w-3.5 h-3.5 text-emerald-400" /> Async BackgroundTasks Queue
                 </h4>
-                <span className="text-[9px] font-mono text-neutral-400 block mb-1">Asyncio Workers • Non-Blocking Queue</span>
-                <p className="text-[11px] text-neutral-400 leading-relaxed">Non-blocking background workers for PDF parsing, dense embeddings, and gap discovery.</p>
+                <span className="text-[10px] font-mono text-emerald-300 font-semibold block mb-1">Asyncio Workers • Non-Blocking Queue</span>
+                <p className="text-[11px] text-slate-200 leading-relaxed font-normal">Non-blocking background workers for PDF parsing, dense embeddings, and gap discovery.</p>
               </div>
             </div>
           </div>
@@ -564,20 +564,20 @@ export default function HighLevelSystemArchitecture3D() {
                   <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-white/10 text-white border border-white/30">
                     PIPELINE 1
                   </span>
-                  <span className="text-[10px] font-mono text-neutral-400">PDF Ingest Engine</span>
+                  <span className="text-[10px] font-mono text-slate-300 font-semibold">PDF Ingest Engine</span>
                 </div>
                 <h4 className="font-bold text-white text-xs mb-1">PyMuPDF Section Ingestion</h4>
-                <span className="text-[9px] font-mono text-neutral-400 block mb-1.5">fitz • 500w Windows • SHA-256</span>
-                <p className="text-[11px] text-neutral-400 mb-3 leading-relaxed">
+                <span className="text-[10px] font-mono text-cyan-300 block mb-1.5 font-semibold">fitz • 500w Windows • SHA-256</span>
+                <p className="text-[11px] text-slate-200 mb-3 leading-relaxed font-normal">
                   Layout stream parsing, SHA-256 deduplication, regex section detection, and 500-word sliding windows (100w overlap) with 1-indexed page tagging.
                 </p>
-                <div className="space-y-1 text-[11px] text-neutral-300 pt-2 border-t border-neutral-800/80">
+                <div className="space-y-1 text-[11px] text-slate-100 pt-2 border-t border-white/15">
                   <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3 h-3 text-white shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
                     <span>Live Sourcing: SerpAPI + OpenAlex</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3 h-3 text-white shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
                     <span>Regex Split: Limitations, Methods, Future Work</span>
                   </div>
                 </div>
@@ -589,32 +589,32 @@ export default function HighLevelSystemArchitecture3D() {
                   e.stopPropagation();
                   setSelectedNodeId("PIPELINE_RAG");
                 }}
-                className={`p-3.5 rounded-lg border transition-all duration-300 cursor-pointer transform hover:-translate-y-0.5 ${
+                className={`p-3.5 rounded-lg border transition-all duration-300 cursor-pointer transform hover:-translate-y-0.5 bg-white/[0.04] ${
                   activePipeline === "ALL" || activePipeline === "RAG" ? "opacity-100" : "opacity-30"
                 } ${
                   selectedNodeId === "PIPELINE_RAG" || activePipeline === "RAG"
-                    ? "bg-transparent border-white shadow-[0_0_20px_rgba(255,255,255,0.22)] ring-1 ring-white/60 animate-glow-white"
-                    : "bg-transparent border-neutral-800/80 hover:border-white/60 hover:shadow-[0_0_15px_rgba(255,255,255,0.12)]"
+                    ? "border-white shadow-[0_0_20px_rgba(255,255,255,0.22)] ring-1 ring-white/60 animate-glow-white"
+                    : "border-white/20 hover:border-white/60 hover:shadow-[0_0_15px_rgba(255,255,255,0.12)]"
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-white/10 text-white border border-white/30">
                     PIPELINE 2
                   </span>
-                  <span className="text-[10px] font-mono text-neutral-400">Hybrid RAG Engine</span>
+                  <span className="text-[10px] font-mono text-slate-300 font-semibold">Hybrid RAG Engine</span>
                 </div>
                 <h4 className="font-bold text-white text-xs mb-1">Dual-Path RRF Retriever</h4>
-                <span className="text-[9px] font-mono text-neutral-400 block mb-1.5">BGE-384 + BM25Okapi + RRF (k=60)</span>
-                <p className="text-[11px] text-neutral-400 mb-3 leading-relaxed">
+                <span className="text-[10px] font-mono text-amber-300 block mb-1.5 font-semibold">BGE-384 + BM25Okapi + RRF (k=60)</span>
+                <p className="text-[11px] text-slate-200 mb-3 leading-relaxed font-normal">
                   Dense BGE 384d semantic vectors + BM25Okapi sparse lexical matching unified via Reciprocal Rank Fusion, with Cross-Encoder BGE reranking.
                 </p>
-                <div className="space-y-1 text-[11px] text-neutral-300 pt-2 border-t border-neutral-800/80">
+                <div className="space-y-1 text-[11px] text-slate-100 pt-2 border-t border-white/15">
                   <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3 h-3 text-white shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                     <span>BAAI/bge-small-en-v1.5 + BM25Okapi</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3 h-3 text-white shrink-0" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                     <span>Cross-Encoder BGE Reranker for citations</span>
                   </div>
                 </div>
@@ -626,33 +626,33 @@ export default function HighLevelSystemArchitecture3D() {
                   e.stopPropagation();
                   setSelectedNodeId("PIPELINE_GAPS");
                 }}
-                className={`p-3.5 rounded-lg border transition-all duration-300 cursor-pointer transform hover:-translate-y-0.5 ${
+                className={`p-3.5 rounded-lg border transition-all duration-300 cursor-pointer transform hover:-translate-y-0.5 bg-white/[0.04] ${
                   activePipeline === "ALL" || activePipeline === "GAPS" ? "opacity-100" : "opacity-30"
                 } ${
                   selectedNodeId === "PIPELINE_GAPS" || activePipeline === "GAPS"
-                    ? "bg-transparent border-white shadow-[0_0_20px_rgba(255,255,255,0.22)] ring-1 ring-white/60 animate-glow-white"
-                    : "bg-transparent border-neutral-800/80 hover:border-white/60 hover:shadow-[0_0_15px_rgba(255,255,255,0.12)]"
+                    ? "border-white shadow-[0_0_20px_rgba(255,255,255,0.22)] ring-1 ring-white/60 animate-glow-white"
+                    : "border-white/20 hover:border-white/60 hover:shadow-[0_0_15px_rgba(255,255,255,0.12)]"
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-white/10 text-white border border-white/30">
                     PIPELINE 3
                   </span>
-                  <span className="text-[10px] font-mono text-neutral-400">Gap Engine</span>
+                  <span className="text-[10px] font-mono text-slate-300 font-semibold">Gap Engine</span>
                 </div>
                 <h4 className="font-bold text-white text-xs mb-1">9-Stage Gap Discovery</h4>
-                <span className="text-[9px] font-mono text-neutral-400 block mb-1.5">4-Way Taxonomy • Counter-Evidence</span>
-                <p className="text-[11px] text-neutral-400 mb-3 leading-relaxed">
+                <span className="text-[10px] font-mono text-emerald-300 block mb-1.5 font-semibold">4-Way Taxonomy • Counter-Evidence</span>
+                <p className="text-[11px] text-slate-200 mb-3 leading-relaxed font-normal">
                   Autonomous taxonomy classification across 4 axes, counter-evidence verification on newer papers, and grant experiment protocol generation.
                 </p>
-                <div className="space-y-1 text-[11px] text-neutral-300 pt-2 border-t border-neutral-800/80">
+                <div className="space-y-1 text-[11px] text-slate-100 pt-2 border-t border-white/15">
                   <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3 h-3 text-white shrink-0" />
-                    <span>Taxonomy: Generalization, Baselines</span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span>SerpAPI Counter-Query Verification</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3 h-3 text-white shrink-0" />
-                    <span>Counter-evidence verification & scoring</span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span>Novelty Correlation: 0.88 with Reviewers</span>
                   </div>
                 </div>
               </div>
@@ -742,39 +742,39 @@ export default function HighLevelSystemArchitecture3D() {
               </div>
 
               <div className="space-y-2 text-xs">
-                <div className={`p-2.5 rounded bg-transparent border transition-all duration-200 flex items-center gap-2.5 ${
+                <div className={`p-2.5 rounded-lg bg-white/[0.04] border transition-all duration-200 flex items-center gap-2.5 ${
                   activePipeline === "ALL" || activePipeline === "INGEST" || activePipeline === "GAPS" 
-                    ? "border-neutral-800/80 hover:border-white/50 opacity-100" 
-                    : "border-neutral-800/30 opacity-30"
+                    ? "border-white/20 hover:border-white/50 opacity-100" 
+                    : "border-white/10 opacity-30"
                 }`}>
-                  <Database className="w-4 h-4 text-white shrink-0" />
+                  <Database className="w-4 h-4 text-cyan-400 shrink-0" />
                   <div>
                     <h5 className="font-bold text-white text-xs">Neon PostgreSQL (13 Relational Tables)</h5>
-                    <p className="text-[11px] text-neutral-400">Users, Projects, Papers, Sections, Chunks, Gaps & Verified Evidence</p>
+                    <p className="text-[11px] text-slate-200 font-normal">Users, Projects, Papers, Sections, Chunks, Gaps & Verified Evidence</p>
                   </div>
                 </div>
 
-                <div className={`p-2.5 rounded bg-transparent border transition-all duration-200 flex items-center gap-2.5 ${
+                <div className={`p-2.5 rounded-lg bg-white/[0.04] border transition-all duration-200 flex items-center gap-2.5 ${
                   activePipeline === "ALL" || activePipeline === "RAG" 
-                    ? "border-neutral-800/80 hover:border-white/50 opacity-100" 
-                    : "border-neutral-800/30 opacity-30"
+                    ? "border-white/20 hover:border-white/50 opacity-100" 
+                    : "border-white/10 opacity-30"
                 }`}>
-                  <Cpu className="w-4 h-4 text-white shrink-0" />
+                  <Cpu className="w-4 h-4 text-amber-400 shrink-0" />
                   <div>
                     <h5 className="font-bold text-white text-xs">Neon pgvector Extension (384-dim Dense Vectors)</h5>
-                    <p className="text-[11px] text-neutral-400">Sub-12ms cosine distance queries on document_chunks via HNSW (m=16, ef=64)</p>
+                    <p className="text-[11px] text-slate-200 font-normal">Sub-12ms cosine distance queries on document_chunks via HNSW (m=16, ef=64)</p>
                   </div>
                 </div>
 
-                <div className={`p-2.5 rounded bg-transparent border transition-all duration-200 flex items-center gap-2.5 ${
+                <div className={`p-2.5 rounded-lg bg-white/[0.04] border transition-all duration-200 flex items-center gap-2.5 ${
                   activePipeline === "ALL" || activePipeline === "INGEST" 
-                    ? "border-neutral-800/80 hover:border-white/50 opacity-100" 
-                    : "border-neutral-800/30 opacity-30"
+                    ? "border-white/20 hover:border-white/50 opacity-100" 
+                    : "border-white/10 opacity-30"
                 }`}>
-                  <Server className="w-4 h-4 text-white shrink-0" />
+                  <Server className="w-4 h-4 text-emerald-400 shrink-0" />
                   <div>
                     <h5 className="font-bold text-white text-xs">Cloud S3 Object Storage Bucket (boto3)</h5>
-                    <p className="text-[11px] text-neutral-400">Raw academic PDF binary streams and extracted media assets</p>
+                    <p className="text-[11px] text-slate-200 font-normal">Raw academic PDF binary streams and extracted media assets</p>
                   </div>
                 </div>
               </div>
@@ -806,39 +806,39 @@ export default function HighLevelSystemArchitecture3D() {
               </div>
 
               <div className="space-y-2 text-xs">
-                <div className={`p-2.5 rounded bg-transparent border transition-all duration-200 flex items-center gap-2.5 ${
+                <div className={`p-2.5 rounded-lg bg-white/[0.04] border transition-all duration-200 flex items-center gap-2.5 ${
                   activePipeline === "ALL" || activePipeline === "INGEST" || activePipeline === "GAPS" 
-                    ? "border-neutral-800/80 hover:border-white/50 opacity-100" 
-                    : "border-neutral-800/30 opacity-30"
+                    ? "border-white/20 hover:border-white/50 opacity-100" 
+                    : "border-white/10 opacity-30"
                 }`}>
-                  <Search className="w-4 h-4 text-white shrink-0" />
+                  <Search className="w-4 h-4 text-cyan-400 shrink-0" />
                   <div>
                     <h5 className="font-bold text-white text-xs">Google Scholar API (via SerpAPI)</h5>
-                    <p className="text-[11px] text-neutral-400">Live publication retrieval, citation counts, and BibTeX citations</p>
+                    <p className="text-[11px] text-slate-200 font-normal">Live publication retrieval, citation counts, and BibTeX citations</p>
                   </div>
                 </div>
 
-                <div className={`p-2.5 rounded bg-transparent border transition-all duration-200 flex items-center gap-2.5 ${
+                <div className={`p-2.5 rounded-lg bg-white/[0.04] border transition-all duration-200 flex items-center gap-2.5 ${
                   activePipeline === "ALL" || activePipeline === "INGEST" 
-                    ? "border-neutral-800/80 hover:border-white/50 opacity-100" 
-                    : "border-neutral-800/30 opacity-30"
+                    ? "border-white/20 hover:border-white/50 opacity-100" 
+                    : "border-white/10 opacity-30"
                 }`}>
-                  <Globe className="w-4 h-4 text-white shrink-0" />
+                  <Globe className="w-4 h-4 text-amber-400 shrink-0" />
                   <div>
                     <h5 className="font-bold text-white text-xs">OpenAlex & Semantic Scholar APIs</h5>
-                    <p className="text-[11px] text-neutral-400">Open-access DOI resolution and downloadable PDF URLs</p>
+                    <p className="text-[11px] text-slate-200 font-normal">Open-access DOI resolution and downloadable PDF URLs</p>
                   </div>
                 </div>
 
-                <div className={`p-2.5 rounded bg-transparent border transition-all duration-200 flex items-center gap-2.5 ${
+                <div className={`p-2.5 rounded-lg bg-white/[0.04] border transition-all duration-200 flex items-center gap-2.5 ${
                   activePipeline === "ALL" || activePipeline === "RAG" || activePipeline === "GAPS" 
-                    ? "border-neutral-800/80 hover:border-white/50 opacity-100" 
-                    : "border-neutral-800/30 opacity-30"
+                    ? "border-white/20 hover:border-white/50 opacity-100" 
+                    : "border-white/10 opacity-30"
                 }`}>
-                  <Sparkles className="w-4 h-4 text-white shrink-0" />
+                  <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
                   <div>
                     <h5 className="font-bold text-white text-xs">OpenAI API (gpt-4o-mini)</h5>
-                    <p className="text-[11px] text-neutral-400">Structured zero-hallucination JSON prompts for gap synthesis & Q&A</p>
+                    <p className="text-[11px] text-slate-200 font-normal">Structured zero-hallucination JSON prompts for gap synthesis & Q&A</p>
                   </div>
                 </div>
               </div>

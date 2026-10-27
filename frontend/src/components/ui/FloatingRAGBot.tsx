@@ -19,17 +19,70 @@ import {
   Clock,
   ArrowRight,
   CheckCircle2,
+  XCircle,
   RefreshCw,
   RotateCcw
 } from "lucide-react";
 import { apiRequest } from "@/lib/api";
 
+export interface PasswordRequirement {
+  id: string;
+  label: string;
+  detail: string;
+  passed: boolean;
+}
+
+export const evaluatePasswordRequirements = (pwd: string): {
+  isValid: boolean;
+  passedCount: number;
+  totalCount: number;
+  requirements: PasswordRequirement[];
+} => {
+  const requirements: PasswordRequirement[] = [
+    {
+      id: "length",
+      label: "Kam se kam 8 characters",
+      detail: "Minimum 8 characters long",
+      passed: pwd.length >= 8,
+    },
+    {
+      id: "uppercase",
+      label: "Kam se kam ek Uppercase letter (A-Z)",
+      detail: "Capital letter jaise A, B, C...",
+      passed: /[A-Z]/.test(pwd),
+    },
+    {
+      id: "lowercase",
+      label: "Kam se kam ek Lowercase letter (a-z)",
+      detail: "Small letter jaise a, b, c...",
+      passed: /[a-z]/.test(pwd),
+    },
+    {
+      id: "number",
+      label: "Kam se kam ek Number (0-9)",
+      detail: "Numeric digit jaise 0, 1, 2...",
+      passed: /[0-9]/.test(pwd),
+    },
+    {
+      id: "special",
+      label: "Kam se kam ek Special character (!@#$%^&*)",
+      detail: "Symbol jaise @, #, $, %, !, &",
+      passed: /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?~`\\/]/.test(pwd),
+    },
+  ];
+
+  const passedCount = requirements.filter((r) => r.passed).length;
+  const isValid = passedCount === requirements.length;
+  return { isValid, passedCount, totalCount: requirements.length, requirements };
+};
+
 interface ChatMessage {
   id: string;
   sender: "bot" | "user";
   text: string;
-  actionType?: "login_prompt" | "suggest_create" | "suggest_login" | "success" | "lockout";
+  actionType?: "login_prompt" | "suggest_create" | "suggest_login" | "success" | "lockout" | "pwd_requirements";
   suggestedIdentifier?: string;
+  pwdValidation?: PasswordRequirement[];
   timestamp: string;
 }
 
@@ -40,6 +93,12 @@ type AuthStep =
   | "awaiting_reg_email"
   | "awaiting_reg_name"
   | "awaiting_reg_pwd";
+
+export const openAuthConcierge = (mode: "login" | "register" = "login") => {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("open-auth-concierge", { detail: { mode } }));
+  }
+};
 
 export default function FloatingRAGBot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -81,6 +140,36 @@ export default function FloatingRAGBot() {
     }
   }, [messages, isOpen, authStep]);
 
+  // Listen for global open requests (from navbar buttons, hero CTA, etc.)
+  useEffect(() => {
+    const handleOpenAuth = (e: any) => {
+      setIsOpen(true);
+      const mode = e.detail?.mode || "login";
+      if (mode === "login") {
+        addBotMessage("🔑 **Sign In to ResearchGap.ai**\n\nPlease enter your registered **Username or Email Address**:");
+        setAuthStep("awaiting_login_id");
+      } else if (mode === "register") {
+        addBotMessage("✨ **Create Candidate Account**\n\nLet's get you set up! What is your **Email Address**?");
+        setAuthStep("awaiting_reg_email");
+      }
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 150);
+    };
+
+    window.addEventListener("open-auth-concierge", handleOpenAuth);
+
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const authParam = params.get("auth");
+      if (authParam === "login" || authParam === "register") {
+        handleOpenAuth({ detail: { mode: authParam } });
+      }
+    }
+
+    return () => window.removeEventListener("open-auth-concierge", handleOpenAuth);
+  }, []);
+
   // Sync lockout from localStorage
   useEffect(() => {
     const stored = localStorage.getItem("candidate_auth_lockout_until");
@@ -119,7 +208,12 @@ export default function FloatingRAGBot() {
   };
 
   // Helper to append a bot message
-  const addBotMessage = (text: string, actionType?: ChatMessage["actionType"], suggestedIdentifier?: string) => {
+  const addBotMessage = (
+    text: string, 
+    actionType?: ChatMessage["actionType"], 
+    suggestedIdentifier?: string,
+    pwdValidation?: PasswordRequirement[]
+  ) => {
     setMessages((prev) => [
       ...prev,
       {
@@ -128,6 +222,7 @@ export default function FloatingRAGBot() {
         text,
         actionType,
         suggestedIdentifier,
+        pwdValidation,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
     ]);
@@ -267,12 +362,16 @@ export default function FloatingRAGBot() {
   const executeRegister = async (name: string, email: string, pwd: string) => {
     setLoading(true);
     try {
+      const cleanEmail = email.trim().toLowerCase();
+      const finalEmail = cleanEmail.includes("@") ? cleanEmail : `${cleanEmail}@scholar.local`;
+      const finalUsername = name.trim().toLowerCase().replace(/\s+/g, "_") || cleanEmail.split("@")[0];
+
       const resp = await apiRequest<{ access_token: string; token_type: string; user: any }>("/auth/register", {
         method: "POST",
         body: JSON.stringify({
-          full_name: name.trim(),
-          username: name.trim().toLowerCase().replace(/\s+/g, "_"),
-          email: email.trim().toLowerCase(),
+          full_name: name.trim() || finalUsername,
+          username: finalUsername,
+          email: finalEmail,
           password: pwd.trim(),
           role: "researcher"
         })
@@ -444,13 +543,27 @@ export default function FloatingRAGBot() {
     // REGISTRATION STEP 2: User provides Name
     if (authStep === "awaiting_reg_name") {
       setPendingName(rawText);
-      addBotMessage(`Thanks, **${rawText}**! Ab ek secure **Password** choose karein (Bcrypt se encrypt hoga):`);
+      addBotMessage(
+        `Thanks, **${rawText}**! Ab ek secure **Password** choose karein (Bcrypt se encrypt hoga).\n\n📋 **Password Policy Requirements:**\n• Kam se kam **8 characters**\n• Ek **Uppercase letter (A-Z)**\n• Ek **Lowercase letter (a-z)**\n• Ek **Number (0-9)**\n• Ek **Special character (!@#$%^&*)**`
+      );
       setAuthStep("awaiting_reg_pwd");
       return;
     }
 
     // REGISTRATION STEP 3: User provides Password
     if (authStep === "awaiting_reg_pwd") {
+      const pwdEval = evaluatePasswordRequirements(rawText);
+      if (!pwdEval.isValid) {
+        addBotMessage(
+          `⚠️ **Password Requirements Poore Nahi Huye!** (${pwdEval.passedCount}/${pwdEval.totalCount} points match huye)\n\nAapka password security policy ke mutabik strong hona zaroori hai taaki candidate data safe rahe. Niche diye gaye requirements check karein aur jo point missing hai use add karke dobara enter karein:`,
+          "pwd_requirements",
+          undefined,
+          pwdEval.requirements
+        );
+        setInputVal("");
+        return;
+      }
+
       addBotMessage(`🔒 Encrypting password with Bcrypt & provisioning candidate workspace...`);
       await executeRegister(pendingName || "Candidate Researcher", pendingEmail, rawText);
       return;
@@ -638,6 +751,61 @@ export default function FloatingRAGBot() {
                       </button>
                     </div>
                   )}
+
+                  {/* Password Security Requirements Checklist (when requirements not met) */}
+                  {m.pwdValidation && m.pwdValidation.length > 0 && (
+                    <div className="mt-3 pt-2.5 border-t border-white/10 space-y-2">
+                      <div className="text-[11px] font-mono font-semibold text-slate-300 flex items-center justify-between">
+                        <span className="flex items-center gap-1.5 text-amber-300">
+                          <ShieldAlert className="w-3.5 h-3.5" /> Password Security Checklist
+                        </span>
+                        <span className="text-[10px] text-neutral-400 font-mono">
+                          {m.pwdValidation.filter((r) => r.passed).length}/{m.pwdValidation.length} Satisfied
+                        </span>
+                      </div>
+
+                      <div className="space-y-1.5">
+                        {m.pwdValidation.map((req) => (
+                          <div
+                            key={req.id}
+                            className={`p-2.5 rounded-xl border text-[11px] flex items-center gap-2.5 transition-all ${
+                              req.passed
+                                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-200"
+                                : "bg-rose-500/15 border-rose-500/40 text-rose-100 font-medium shadow-[0_0_12px_rgba(244,63,94,0.15)]"
+                            }`}
+                          >
+                            {req.passed ? (
+                              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                            ) : (
+                              <XCircle className="w-4 h-4 text-rose-400 shrink-0 animate-pulse" />
+                            )}
+                            <div className="flex-1 leading-tight">
+                              <span className="font-semibold text-white">{req.label}</span>
+                              <span className="block text-[9.5px] text-neutral-300 font-mono mt-0.5">{req.detail}</span>
+                            </div>
+                            <span
+                              className={`text-[9px] font-mono font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider ${
+                                req.passed
+                                  ? "bg-emerald-500/25 text-emerald-300 border border-emerald-500/40"
+                                  : "bg-rose-500/25 text-rose-300 border border-rose-500/40"
+                              }`}
+                            >
+                              {req.passed ? "PASSED" : "REQUIRED"}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="mt-2 p-2.5 rounded-xl bg-white/[0.05] border border-white/10 text-[10.5px] text-slate-200 font-mono leading-relaxed">
+                        💡 <span className="text-white font-bold">Strong Password Examples:</span>
+                        <div className="mt-1 flex flex-wrap gap-1.5">
+                          <code className="text-cyan-300 bg-black/60 px-2 py-0.5 rounded border border-white/15">Scholar@2025</code>
+                          <code className="text-cyan-300 bg-black/60 px-2 py-0.5 rounded border border-white/15">Secure#Pass89</code>
+                          <code className="text-cyan-300 bg-black/60 px-2 py-0.5 rounded border border-white/15">Research!9090</code>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <span className="text-[9px] text-neutral-500 font-mono mt-1 px-1">
@@ -677,6 +845,51 @@ export default function FloatingRAGBot() {
               </button>
             )}
           </div>
+
+          {/* Live Interactive Password Checklist Bar while candidate is typing */}
+          {authStep === "awaiting_reg_pwd" && (
+            <div className="px-3.5 py-2.5 bg-[#0a0d16] border-t border-white/15">
+              <div className="flex items-center justify-between text-[10.5px] font-mono mb-2">
+                <span className="flex items-center gap-1.5 text-slate-200 font-bold">
+                  <Lock className="w-3.5 h-3.5 text-cyan-400" /> Password Strength & Rules:
+                </span>
+                <span
+                  className={`font-black text-[11px] px-2 py-0.5 rounded border ${
+                    evaluatePasswordRequirements(inputVal).isValid
+                      ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300 shadow-[0_0_10px_rgba(52,211,153,0.3)]"
+                      : "bg-amber-500/15 border-amber-500/30 text-amber-300"
+                  }`}
+                >
+                  {evaluatePasswordRequirements(inputVal).passedCount}/5 Criteria Met
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {evaluatePasswordRequirements(inputVal).requirements.map((req) => (
+                  <span
+                    key={req.id}
+                    className={`px-2 py-1 rounded-lg text-[9.5px] font-mono border transition-all flex items-center gap-1.5 ${
+                      req.passed
+                        ? "bg-emerald-500/20 border-emerald-500/50 text-emerald-300 font-bold shadow-[0_0_8px_rgba(52,211,153,0.2)]"
+                        : inputVal.length > 0
+                        ? "bg-rose-500/15 border-rose-500/35 text-rose-300"
+                        : "bg-white/[0.04] border-white/10 text-neutral-400"
+                    }`}
+                  >
+                    {req.passed ? (
+                      <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+                    ) : (
+                      <span className="w-1.5 h-1.5 rounded-full bg-neutral-500 shrink-0" />
+                    )}
+                    {req.id === "length" && "8+ Chars"}
+                    {req.id === "uppercase" && "A-Z (Caps)"}
+                    {req.id === "lowercase" && "a-z (Small)"}
+                    {req.id === "number" && "0-9 (Digit)"}
+                    {req.id === "special" && "Symbol (!@#)"}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Input Footer */}
           <form

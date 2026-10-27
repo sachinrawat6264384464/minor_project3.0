@@ -20,21 +20,25 @@ import {
   ChevronRight,
   Database,
   Radio,
-  Share2
+  Share2,
+  LogIn,
+  UserPlus
 } from "lucide-react";
 
-import FloatingRAGBot from "@/components/ui/FloatingRAGBot";
+import FloatingRAGBot, { openAuthConcierge } from "@/components/ui/FloatingRAGBot";
 import VectorPointGalaxyCanvas from "@/components/landing/VectorPointGalaxyCanvas";
 import CylinderOrbitalShowcase3D from "@/components/landing/CylinderOrbitalShowcase3D";
 import HighLevelSystemArchitecture3D from "@/components/landing/HighLevelSystemArchitecture3D";
-import VectorSpaceLaserScene from "@/components/landing/VectorSpaceLaserScene";
+import WhyYouNeedThisPlatform from "@/components/landing/WhyYouNeedThisPlatform";
 import ArchitectureFlowVisualizer from "@/components/landing/ArchitectureFlowVisualizer";
+import DashboardShowcaseGallery from "@/components/landing/DashboardShowcaseGallery";
+import { ResearchTorchDarkBackground } from "@/components/landing/ResearchTorchDarkBackground";
 
 export default function LandingPage() {
   const [activeTab, setActiveTab] = useState<"rag" | "matrix" | "novelty">("rag");
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-white selection:text-black relative overflow-x-hidden">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-white selection:text-black relative">
       {/* Floating Corner Grounded RAG Chatbot Widget */}
       <FloatingRAGBot />
 
@@ -59,20 +63,22 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Right: Action Buttons */}
-          <div className="flex items-center gap-3">
-            <Link
-              href="/scholar-studio"
-              className="px-4 py-2 text-xs sm:text-[13px] font-sans font-semibold tracking-wider text-slate-300 hover:text-white hover:bg-white/10 rounded-full transition flex items-center gap-1.5"
+          {/* Right: Authentication Action Buttons (Opens Chatbot Concierge Directly) */}
+          <div className="flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => openAuthConcierge("login")}
+              className="px-4 py-2 text-xs sm:text-[13px] font-sans font-semibold tracking-wider text-neutral-300 hover:text-white hover:bg-white/10 rounded-full transition flex items-center gap-1.5 border border-white/10 hover:border-white/30 backdrop-blur-md cursor-pointer"
             >
-              <Search className="w-3.5 h-3.5" /> Scholar Studio
-            </Link>
-            <Link
-              href="/dashboard"
-              className="px-5 py-2.5 bg-white hover:bg-slate-200 text-black font-extrabold text-xs sm:text-[13px] font-sans tracking-wider rounded-full transition shadow-[0_0_25px_rgba(255,255,255,0.6)] flex items-center gap-1.5"
+              <LogIn className="w-3.5 h-3.5" /> Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => openAuthConcierge("register")}
+              className="px-5 py-2.5 bg-white hover:bg-neutral-200 text-black font-extrabold text-xs sm:text-[13px] font-sans tracking-wider rounded-full transition shadow-[0_0_25px_rgba(255,255,255,0.7)] flex items-center gap-1.5 cursor-pointer"
             >
-              Launch Platform <ArrowRight className="w-4 h-4" />
-            </Link>
+              <UserPlus className="w-3.5 h-3.5" /> Sign Up
+            </button>
           </div>
 
         </header>
@@ -94,7 +100,10 @@ export default function LandingPage() {
       {/* =========================================================================
        * CONTINUOUS ARCHITECTURAL BLUEPRINT GRID WRAPPER (HERO TO FOOTER)
        * ========================================================================= */}
-      <div className="relative w-full blueprint-matrix-grid overflow-hidden">
+      <div className="relative w-full blueprint-matrix-grid">
+        {/* Interactive Dark Torch Effect with Secret Research Artifacts */}
+        <ResearchTorchDarkBackground />
+
         {/* Subtle Ambient Radial Lighting for Cosmic Depth */}
         <div 
           className="pointer-events-none absolute inset-0 z-0 opacity-40"
@@ -104,10 +113,10 @@ export default function LandingPage() {
         />
 
         {/* =========================================================================
-         * SECTION 1: 360° CYLINDRICAL ORBITAL PAPER SHOWCASE (Matching User Image 1 & 2)
+         * SECTION 1: WHY RESEARCHERS MUST USE THIS (Placed Directly After Hero)
          * ========================================================================= */}
-        <section id="orbital-papers" className="relative z-10 bg-transparent">
-          <CylinderOrbitalShowcase3D />
+        <section id="why-use-platform" className="relative z-10 w-full bg-transparent">
+          <WhyYouNeedThisPlatform />
         </section>
 
         {/* =========================================================================
@@ -118,10 +127,10 @@ export default function LandingPage() {
         </section>
 
         {/* =========================================================================
-         * SECTION 3: 3D VECTOR SPACE & NEAREST CHUNKS LASER SCENE (Matching User Image 3 & 5)
+         * SECTION 3: 360° CYLINDRICAL ORBITAL PAPER SHOWCASE (Moved to Section 3)
          * ========================================================================= */}
-        <section id="vector-db" className="relative z-10 bg-transparent">
-          <VectorSpaceLaserScene />
+        <section id="orbital-papers" className="relative z-10 bg-transparent">
+          <CylinderOrbitalShowcase3D />
         </section>
 
         {/* =========================================================================
@@ -132,120 +141,11 @@ export default function LandingPage() {
         </section>
 
         {/* =========================================================================
-         * SECTION 5: SIDE-BY-SIDE PAPER COMPARISON MATRIX PREVIEW (Border removed)
+         * SECTION 5: LIVE WORKSPACE DASHBOARD SUITE GALLERY (Compact & Interactive)
          * ========================================================================= */}
-        <section className="relative z-10 bg-transparent py-20 px-4 md:px-8 max-w-6xl mx-auto text-white">
-        <div className="text-center max-w-3xl mx-auto mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white text-black text-[11px] font-mono font-bold uppercase tracking-widest rounded-full mb-3 shadow-[0_0_20px_rgba(255,255,255,0.7)]">
-            <GitCompare className="w-3.5 h-3.5" />
-            SYNTHESIS MATRIX
-          </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-white">
-            SIDE-BY-SIDE <span className="underline decoration-white decoration-4 underline-offset-8">EVIDENCE COMPARISON</span>
-          </h2>
-          <p className="text-slate-400 text-xs sm:text-sm mt-3">
-            Compare multiple papers across objectives, datasets, baselines, and reported limitations. Explicitly marks unreported values to prevent misleading scientific assumptions.
-          </p>
-        </div>
-
-        {/* Matrix Grid Preview */}
-        <div className="p-4 sm:p-6 rounded-2xl bg-white/5 border border-white/20 backdrop-blur-md overflow-x-auto shadow-[0_0_40px_rgba(255,255,255,0.05)]">
-          <table className="w-full text-left text-xs font-sans min-w-[700px]">
-            <thead>
-              <tr className="border-b border-white/20 text-slate-400 font-mono text-[11px] uppercase">
-                <th className="py-3 px-4">Evaluation Dimension</th>
-                <th className="py-3 px-4 text-white">Paper 01: Medical ViT (2025)</th>
-                <th className="py-3 px-4 text-white">Paper 02: Hybrid RAG (2024)</th>
-                <th className="py-3 px-4 text-white">Paper 03: Gap Synthesis (2024)</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/10 text-slate-300">
-              <tr>
-                <td className="py-3.5 px-4 font-mono font-bold text-white">Primary Objective</td>
-                <td className="py-3.5 px-4">High-res 3D volumetric MRI segmentation</td>
-                <td className="py-3.5 px-4">Reciprocal Rank Fusion with citation guardrails</td>
-                <td className="py-3.5 px-4">Automated 9-stage limitation extraction</td>
-              </tr>
-              <tr>
-                <td className="py-3.5 px-4 font-mono font-bold text-white">Evaluated Datasets</td>
-                <td className="py-3.5 px-4">BraTS 2024, MSD Liver (45 MRI benchmarks)</td>
-                <td className="py-3.5 px-4">PubMedQA, BioASQ, SciFact</td>
-                <td className="py-3.5 px-4">OpenAlex 10,000 CS/AI sample corpus</td>
-              </tr>
-              <tr>
-                <td className="py-3.5 px-4 font-mono font-bold text-white">Key Reported Metric</td>
-                <td className="py-3.5 px-4 text-emerald-400 font-mono">Dice: 89.4% (vs 86.1% baseline)</td>
-                <td className="py-3.5 px-4 text-emerald-400 font-mono">Citation recall: 99.2% verified</td>
-                <td className="py-3.5 px-4 text-emerald-400 font-mono">Novelty correlation: 0.88 with reviewers</td>
-              </tr>
-              <tr>
-                <td className="py-3.5 px-4 font-mono font-bold text-white">Extracted Limitation</td>
-                <td className="py-3.5 px-4 text-amber-300 italic">Sensitive to hospital scanner blur [Page 7]</td>
-                <td className="py-3.5 px-4 text-amber-300 italic">Requires multi-hop graph tuning [Page 11]</td>
-                <td className="py-3.5 px-4 text-amber-300 italic">Requires human doctor signoff [Page 4]</td>
-              </tr>
-              <tr>
-                <td className="py-3.5 px-4 font-mono font-bold text-white">Thesis Novelty Index</td>
-                <td className="py-3.5 px-4 font-mono text-white font-bold">88.4% Novel</td>
-                <td className="py-3.5 px-4 font-mono text-white font-bold">92.1% Novel</td>
-                <td className="py-3.5 px-4 font-mono text-white font-bold">95.6% Novel</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-            <span className="text-slate-400">
-              Interactive side-by-side comparison matrix with exportable IEEE LaTeX tables.
-            </span>
-            <Link
-              href="/compare"
-              className="text-white hover:underline flex items-center gap-1 font-bold"
-            >
-              Open Full Compare Matrix <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================================
-       * SECTION 6: CALL-TO-ACTION & PLATFORM LAUNCH
-       * ========================================================================= */}
-      <section className="py-24 px-4 md:px-8 bg-black relative overflow-hidden border-t border-white/20">
-        <div className="absolute inset-0 pointer-events-none opacity-20">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/10 rounded-full blur-[140px]" />
-        </div>
-
-        <div className="max-w-4xl mx-auto text-center relative z-10 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white text-black font-mono font-bold text-xs uppercase tracking-widest rounded-full shadow-[0_0_20px_rgba(255,255,255,0.7)]">
-            <Zap className="w-3.5 h-3.5" />
-            READY FOR SCIENTIFIC SYNTHESIS
-          </div>
-
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-white leading-tight">
-            ACCELERATE YOUR DISSERTATION & PEER-REVIEWED PUBLICATION
-          </h2>
-
-          <p className="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto font-sans leading-relaxed">
-            Stop searching manually across fragmented tabs. Ingest your literature corpus, generate 100% verifiable answers with exact page numbers, discover genuine research gaps, and export IEEE LaTeX papers directly to Overleaf.
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-            <Link
-              href="/dashboard"
-              className="px-8 py-4 rounded-xl bg-white text-black font-mono font-bold text-xs uppercase tracking-widest hover:bg-slate-200 transition shadow-[0_0_35px_rgba(255,255,255,0.7)] flex items-center gap-2"
-            >
-              <Sparkles className="w-4 h-4" /> Enter Research Workspace
-            </Link>
-
-            <Link
-              href="/novelty-checker"
-              className="px-8 py-4 rounded-xl bg-black border border-white/40 text-white font-mono font-bold text-xs uppercase tracking-widest hover:border-white hover:bg-white/10 transition flex items-center gap-2"
-            >
-              <ShieldCheck className="w-4 h-4" /> Check Thesis Novelty (0–100%)
-            </Link>
-          </div>
-        </div>
-      </section>
+        <section id="dashboard-gallery" className="relative z-10 bg-transparent">
+          <DashboardShowcaseGallery />
+        </section>
 
       <footer className="relative z-10 bg-transparent pt-20 pb-28 sm:pb-36 px-6 md:px-12 text-slate-400 text-xs font-mono">
         {/* Grand Architecture Question Headline (Moved to Footer in Big Bold Size) */}

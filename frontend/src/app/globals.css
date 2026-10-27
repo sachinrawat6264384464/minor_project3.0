@@ -13,7 +13,6 @@ body {
   background-color: #000000;
   color: #FFFFFF;
   font-family: 'Space Grotesk', 'Inter', sans-serif;
-  overflow-x: hidden;
 }
 
 /* -------------------------------------------------------------
@@ -266,4 +265,48 @@ body {
 
 .glow-diamond-pulse {
   animation: diamondGlow 2.5s ease-in-out infinite;
+}
+
+/* Horizontal Scanning Laser Beam */
+@keyframes scanBeamAnim {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(1000%);
+    opacity: 0;
+  }
+}
+
+.animate-scan-beam {
+  animation: scanBeamAnim 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Flowing Velocity Stream Particle */
+@keyframes flowParticleAnim {
+  0% {
+    transform: translateX(-20px) translateY(0px);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(550px) translateY(-15px);
+    opacity: 0;
+  }
+}
+
+.animate-flow-particle {
+  animation: flowParticleAnim 2.8s linear infinite;
 }

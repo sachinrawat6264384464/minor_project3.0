@@ -114,12 +114,25 @@ def register_user(user_in: UserCreate, db: Session = Depends(get_db)):
     """
     Register a candidate in Neon DB with bcrypt-encrypted credentials and RBAC role.
     """
-    email_clean = user_in.email.strip().lower()
-    existing_email = db.query(User).filter(User.email.ilike(email_clean)).first()
+    raw_identifier = user_in.email.strip().lower()
+    if "@" not in raw_identifier:
+        email_clean = f"{raw_identifier}@scholar.local"
+        default_username = raw_identifier
+    else:
+        email_clean = raw_identifier
+        default_username = raw_identifier.split("@")[0]
+
+    existing_email = db.query(User).filter(
+        or_(
+            User.email.ilike(email_clean),
+            User.email.ilike(raw_identifier),
+            User.username.ilike(raw_identifier)
+        )
+    ).first()
     if existing_email:
-        raise HTTPException(status_code=400, detail="An account with this email already exists.")
+        raise HTTPException(status_code=400, detail="An account with this email/identifier already exists.")
     
-    username_clean = (user_in.username or email_clean.split("@")[0]).strip().lower()
+    username_clean = (user_in.username or default_username).strip().lower()
     existing_username = db.query(User).filter(User.username.ilike(username_clean)).first()
     if existing_username:
         username_clean = f"{username_clean}_{uuid.uuid4().hex[:4]}"

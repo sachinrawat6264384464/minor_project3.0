@@ -337,9 +337,59 @@ export default function CylinderOrbitalShowcase3D() {
     targetAngleRef.current -= diff * stepAngle;
   };
 
-  // Mobile / Desktop responsive cylinder radius
-  // 6 cards of 310px width need ~390px radius for comfortable spatial circumference
-  const radius = 390;
+  // Responsive dynamic cylinder dimensions
+  const [dimensions, setDimensions] = useState({
+    radius: 320,
+    cardWidth: 260,
+    cardHeight: 350,
+    stageHeight: 470,
+    perspective: 900
+  });
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      const w = window.innerWidth;
+      if (w < 480) {
+        setDimensions({
+          radius: 195,
+          cardWidth: 190,
+          cardHeight: 280,
+          stageHeight: 380,
+          perspective: 650
+        });
+      } else if (w < 768) {
+        setDimensions({
+          radius: 235,
+          cardWidth: 215,
+          cardHeight: 305,
+          stageHeight: 410,
+          perspective: 750
+        });
+      } else if (w < 1200) {
+        setDimensions({
+          radius: 285,
+          cardWidth: 240,
+          cardHeight: 330,
+          stageHeight: 450,
+          perspective: 850
+        });
+      } else {
+        setDimensions({
+          radius: 325,
+          cardWidth: 260,
+          cardHeight: 350,
+          stageHeight: 475,
+          perspective: 950
+        });
+      }
+    };
+
+    updateDimensions();
+    window.addEventListener("resize", updateDimensions);
+    return () => window.removeEventListener("resize", updateDimensions);
+  }, []);
+
+  const { radius, cardWidth, cardHeight, stageHeight, perspective } = dimensions;
 
   return (
     <div 
@@ -410,10 +460,11 @@ export default function CylinderOrbitalShowcase3D() {
       </div>
 
       {/* =========================================================================
-       * 3D CYLINDRICAL ORBIT STAGE (Generous Height, Zero Jitter)
+       * 3D CYLINDRICAL ORBIT STAGE (Responsive & Compact Dimensions)
        * ========================================================================= */}
       <div 
-        className="relative w-full h-[540px] sm:h-[600px] flex items-center justify-center cursor-grab active:cursor-grabbing perspective-stage z-10 touch-none"
+        className="relative w-full flex items-center justify-center cursor-grab active:cursor-grabbing perspective-stage z-10 touch-none overflow-visible"
+        style={{ height: `${stageHeight}px`, perspective: `${perspective}px` }}
         onPointerDown={handlePointerDown}
         onMouseEnter={() => {
           isHoveredRef.current = true;
@@ -426,7 +477,8 @@ export default function CylinderOrbitalShowcase3D() {
         {/* The 3D Rotating Cylinder (Updated directly by RAF for 60/120fps fluid GPU motion) */}
         <div 
           ref={cylinderRef}
-          className="relative w-[300px] sm:w-[320px] h-[400px] sm:h-[430px] preserve-3d will-change-transform"
+          className="relative preserve-3d will-change-transform"
+          style={{ width: `${cardWidth}px`, height: `${cardHeight}px` }}
         >
           {ACADEMIC_DOCS.map((doc, index) => {
             const angle = stepAngle * index;
@@ -448,51 +500,55 @@ export default function CylinderOrbitalShowcase3D() {
                   if (dragDistanceRef.current > 6) return;
                   setSelectedDocForModal(doc);
                 }}
-                className="absolute inset-0 w-[290px] sm:w-[310px] h-[390px] sm:h-[420px] rounded-xl transition-all duration-200 preserve-3d"
+                className={`absolute inset-0 rounded-xl transition-opacity duration-300 preserve-3d ${
+                  isFrontCard ? "opacity-100 z-30" : isHovered ? "opacity-95 z-20" : "opacity-45 hover:opacity-85 z-10"
+                }`}
                 style={{
+                  width: `${cardWidth}px`,
+                  height: `${cardHeight}px`,
                   transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
                   backfaceVisibility: "visible",
                 }}
               >
                 {/* Advanced Technology Architecture Card */}
                 <div 
-                  className={`relative w-full h-full p-5 rounded-xl bg-black/95 backdrop-blur-xl border transition-colors duration-200 flex flex-col justify-between cursor-pointer ${
+                  className={`relative w-full h-full p-3.5 sm:p-4 rounded-xl bg-black/95 backdrop-blur-xl border transition-all duration-200 flex flex-col justify-between cursor-pointer ${
                     isHovered || isFrontCard
-                      ? "border-white shadow-[0_0_40px_rgba(255,255,255,0.45)] ring-1 ring-white/60" 
-                      : "border-white/25 hover:border-white/60 shadow-[0_0_20px_rgba(255,255,255,0.08)]"
+                      ? "border-white shadow-[0_0_30px_rgba(255,255,255,0.45)] ring-1 ring-white/60 scale-[1.02]" 
+                      : "border-white/20 hover:border-white/50 shadow-[0_0_15px_rgba(255,255,255,0.06)]"
                   }`}
                 >
                   {/* Subtle Top Glowing Line */}
-                  <div className={`absolute top-0 inset-x-6 h-[2px] rounded-full transition-opacity duration-300 ${isFrontCard || isHovered ? "bg-white opacity-100 shadow-[0_0_12px_#fff]" : "bg-white/20 opacity-40"}`} />
+                  <div className={`absolute top-0 inset-x-4 h-[2px] rounded-full transition-opacity duration-300 ${isFrontCard || isHovered ? "bg-white opacity-100 shadow-[0_0_10px_#fff]" : "bg-white/20 opacity-30"}`} />
 
                   {/* Top Technology Header */}
                   <div>
-                    <div className="flex items-center justify-between border-b border-white/20 pb-2.5 mb-2.5">
+                    <div className="flex items-center justify-between border-b border-white/15 pb-2 mb-2">
                       <div className="flex items-center gap-1.5">
-                        <Cpu className="w-3.5 h-3.5 text-white" />
-                        <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-white">
+                        <Cpu className="w-3 h-3 text-white" />
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-white">
                           {doc.category}
                         </span>
                       </div>
-                      <span className="text-[10px] font-mono text-white/90 bg-white/10 px-2 py-0.5 rounded border border-white/20 font-semibold">
+                      <span className="text-[9px] font-mono text-white/90 bg-white/10 px-1.5 py-0.5 rounded border border-white/20 font-semibold">
                         {doc.venue}
                       </span>
                     </div>
 
                     {/* Technology Title */}
-                    <div className="h-0.5 bg-white w-2/3 mb-2 rounded-full" />
-                    <h3 className="text-sm sm:text-[15px] font-extrabold text-white font-sans leading-snug line-clamp-2 mb-1.5">
+                    <div className="h-0.5 bg-white w-1/2 mb-1.5 rounded-full" />
+                    <h3 className="text-xs sm:text-sm font-extrabold text-white font-sans leading-snug line-clamp-2 mb-1">
                       {doc.shortTitle}
                     </h3>
 
                     {/* Integrated Tech Stack Badge */}
-                    <div className="text-[10px] font-mono text-neutral-400 mb-2.5 truncate">
+                    <div className="text-[9px] font-mono text-neutral-400 mb-2 truncate">
                       {doc.techStack}
                     </div>
 
                     {/* Dynamic Spec Header & Description */}
-                    <div className="p-3 bg-white/[0.04] border border-white/20 rounded-lg text-[11px] font-sans text-neutral-200 line-clamp-4 leading-relaxed">
-                      <span className="text-white font-bold block mb-1 text-[10px] uppercase tracking-wider font-mono">
+                    <div className="p-2 sm:p-2.5 bg-white/[0.04] border border-white/15 rounded text-[10px] sm:text-[11px] font-sans text-neutral-200 line-clamp-3 sm:line-clamp-4 leading-relaxed">
+                      <span className="text-white font-bold block mb-0.5 text-[9px] sm:text-[10px] uppercase tracking-wider font-mono">
                         {doc.specHeader}
                       </span>
                       {doc.specDetails}
@@ -500,20 +556,20 @@ export default function CylinderOrbitalShowcase3D() {
                   </div>
 
                   {/* Bottom Benchmark & Latency Score */}
-                  <div>
-                    <div className="pt-2.5 border-t border-white/20 flex items-center justify-between text-[11px] font-mono">
-                      <span className="text-neutral-300 text-[10px] truncate max-w-[170px] font-medium">
+                  <div className="pt-2 border-t border-white/15">
+                    <div className="flex items-center justify-between text-[10px] font-mono">
+                      <span className="text-neutral-300 text-[9px] truncate max-w-[140px] font-medium">
                         {doc.keyMetric}
                       </span>
-                      <span className="px-2 py-0.5 bg-white text-black font-extrabold rounded text-[10px] shadow-[0_0_10px_rgba(255,255,255,0.6)]">
+                      <span className="px-1.5 py-0.5 bg-white text-black font-extrabold rounded text-[9px] shadow-[0_0_8px_rgba(255,255,255,0.6)]">
                         SIM {doc.nearestVectorSim}
                       </span>
                     </div>
 
-                    <div className="mt-2 text-[9px] font-mono text-neutral-400 flex items-center justify-between">
+                    <div className="mt-1.5 text-[8px] sm:text-[9px] font-mono text-neutral-400 flex items-center justify-between">
                       <span className="uppercase tracking-widest text-neutral-400">STAGE 0{index + 1}</span>
                       <span className="text-white hover:underline flex items-center gap-1 font-semibold">
-                        View Spec <ArrowRight className="w-2.5 h-2.5" />
+                        View Spec <ArrowRight className="w-2 h-2" />
                       </span>
                     </div>
                   </div>

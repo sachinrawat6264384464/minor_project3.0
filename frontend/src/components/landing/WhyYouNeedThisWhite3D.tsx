@@ -549,7 +549,7 @@ export default function WhyYouNeedThisWhite3D() {
           </h3>
 
           <p className="text-blue-100 text-xs sm:text-base max-w-2xl mx-auto mb-8 font-sans leading-relaxed">
-            Abhi login karein, apne PDFs upload karein, aur verified citations ke saath apne research gaps aur novelty score ko instantly inspect karein.
+            Log in now, upload your research PDFs, and instantly inspect evidence-backed research gaps and novelty scores with verifiable citations.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">

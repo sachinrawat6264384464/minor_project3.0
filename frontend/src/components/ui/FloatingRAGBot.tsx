@@ -41,32 +41,32 @@ export const evaluatePasswordRequirements = (pwd: string): {
   const requirements: PasswordRequirement[] = [
     {
       id: "length",
-      label: "Kam se kam 8 characters",
-      detail: "Minimum 8 characters long",
+      label: "Minimum 8 characters",
+      detail: "Must be at least 8 characters long",
       passed: pwd.length >= 8,
     },
     {
       id: "uppercase",
-      label: "Kam se kam ek Uppercase letter (A-Z)",
-      detail: "Capital letter jaise A, B, C...",
+      label: "At least one Uppercase letter (A-Z)",
+      detail: "Capital letters like A, B, C...",
       passed: /[A-Z]/.test(pwd),
     },
     {
       id: "lowercase",
-      label: "Kam se kam ek Lowercase letter (a-z)",
-      detail: "Small letter jaise a, b, c...",
+      label: "At least one Lowercase letter (a-z)",
+      detail: "Small letters like a, b, c...",
       passed: /[a-z]/.test(pwd),
     },
     {
       id: "number",
-      label: "Kam se kam ek Number (0-9)",
-      detail: "Numeric digit jaise 0, 1, 2...",
+      label: "At least one Number (0-9)",
+      detail: "Numeric digits like 0, 1, 2...",
       passed: /[0-9]/.test(pwd),
     },
     {
       id: "special",
-      label: "Kam se kam ek Special character (!@#$%^&*)",
-      detail: "Symbol jaise @, #, $, %, !, &",
+      label: "At least one Special character (!@#$%^&*)",
+      detail: "Symbols like @, #, $, %, !, &",
       passed: /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?~`\\/]/.test(pwd),
     },
   ];
@@ -106,7 +106,7 @@ export default function FloatingRAGBot() {
     {
       id: "init-1",
       sender: "bot",
-      text: "👋 Namaste! I am your **Candidate Auth Concierge**.\n\n• Directly apna **Username aur Password** chat me likh kar login karein (jaise: `username password`)\n• Ya agar naya candidate account create karna hai toh niche click karein:",
+      text: "👋 Hello! I am your **Candidate Auth Concierge**.\n\n• Directly type your **Username and Password** in chat to log in (e.g. `username password`)\n• Or click below to create a new candidate account:",
       actionType: "login_prompt",
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
@@ -308,7 +308,7 @@ export default function FloatingRAGBot() {
       // Case: Account NOT in Database
       if (errMsg.includes("Account not found") || errMsg.includes("404")) {
         addBotMessage(
-          `❌ **No Account Found in Database!**\n\nDatabase me \`${idToUse}\` naam ka koi candidate account exist nahi karta hai.\n\nPlease pehle apna account create karein:`,
+          `❌ **No Account Found in Database!**\n\nNo candidate account exists for \`${idToUse}\` in the database.\n\nPlease create an account first:`,
           "suggest_create",
           idToUse
         );
@@ -341,14 +341,14 @@ export default function FloatingRAGBot() {
         localStorage.setItem("candidate_auth_lockout_until", lockoutExpiry.toString());
         setLockoutRemaining(180);
         addBotMessage(
-          `🔒 **Maximum Attempts Exceeded!**\n\nAapne 3 baar galat password enter kiya hai. Account **3 minutes** ke liye temporarily lock kar diya gaya hai.`,
+          `🔒 **Maximum Attempts Exceeded!**\n\nYou have entered an incorrect password 3 times. Your account has been temporarily locked for **3 minutes**.`,
           "lockout"
         );
         setAuthStep("idle");
       } else {
         const triesLeft = 3 - newAttempts;
         addBotMessage(
-          `⚠️ **Incorrect Password!**\n\nPassword match nahi hua. Aapke paas **${triesLeft} attempt(s)** bache hain 3-minute lockout se pehle.\n\nKripya \`${idToUse}\` ka sahi password enter karein:`
+          `⚠️ **Incorrect Password!**\n\nPassword did not match. You have **${triesLeft} attempt(s)** remaining before a 3-minute lockout.\n\nPlease enter the correct password for \`${idToUse}\`:`
         );
         setPendingIdentifier(idToUse);
         setAuthStep("awaiting_login_pwd");
@@ -382,7 +382,7 @@ export default function FloatingRAGBot() {
       localStorage.setItem("user", JSON.stringify(resp.user));
 
       addBotMessage(
-        `🎉 **Candidate Account Provisioned Successfully!**\n\nWelcome, **${resp.user.full_name}**!\nAapka password Bcrypt se encrypt karke Neon DB me store ho chuka hai.\nRole: \`RESEARCHER\` (Isolated RBAC Workspace)\n\nLaunching your candidate workspace...`,
+        `🎉 **Candidate Account Provisioned Successfully!**\n\nWelcome, **${resp.user.full_name}**!\nYour password is securely encrypted with Bcrypt and stored in Neon DB.\nRole: \`RESEARCHER\` (Isolated RBAC Workspace)\n\nLaunching your candidate workspace...`,
         "success"
       );
 
@@ -430,7 +430,7 @@ export default function FloatingRAGBot() {
     // 1. Check Security Guardrail: forbid asking for passwords
     if (checkPasswordLeakAttempt(rawText)) {
       addBotMessage(
-        "🔒 **Security Guardrail Enforced:**\n\nUser passwords aur authentication credentials Bcrypt hashing ke sath fully protected hain. Zero-knowledge policy ke tehat kisi bhi user ka password disclose nahi kiya ja sakta."
+        "🔒 **Security Guardrail Enforced:**\n\nUser passwords and authentication credentials are encrypted using Bcrypt hashing under zero-knowledge isolation. System policy strictly prohibits disclosing credentials or private account data."
       );
       return;
     }
@@ -447,7 +447,7 @@ export default function FloatingRAGBot() {
       if (!userCheck.exists) {
         setLoading(false);
         addBotMessage(
-          `❌ **No Account Found in Database!**\n\nDatabase me \`${oneShot.identifier}\` naam ka koi candidate account nahi mila.\n\n👉 Pehle account create karein:`,
+          `❌ **No Account Found in Database!**\n\nNo candidate account found for \`${oneShot.identifier}\` in the database.\n\n👉 Please create an account first:`,
           "suggest_create",
           oneShot.identifier
         );
@@ -493,7 +493,7 @@ export default function FloatingRAGBot() {
       if (!check.exists) {
         // STRICT USER REQUIREMENT: IF NOT IN DATABASE, DO NOT ASK PASSWORD!
         addBotMessage(
-          `❌ **No Account Found in Database!**\n\nDatabase me \`${rawText}\` naam ka koi candidate account exist nahi karta hai.\n\n👉 Pehle apna account create karein ya registered email se try karein:`,
+          `❌ **No Account Found in Database!**\n\nNo candidate account exists for \`${rawText}\` in the database.\n\n👉 Please create an account first or try with your registered email:`,
           "suggest_create",
           rawText
         );
@@ -503,7 +503,7 @@ export default function FloatingRAGBot() {
 
       // Candidate exists in Neon DB -> Now ask for password
       setPendingIdentifier(rawText);
-      addBotMessage(`✅ Account found for **${check.full_name || rawText}**!\n\nAb kripya apna **Password** enter karein:`);
+      addBotMessage(`✅ Account found for **${check.full_name || rawText}**!\n\nPlease enter your **Password**:`);
       setAuthStep("awaiting_login_pwd");
       return;
     }
@@ -525,7 +525,7 @@ export default function FloatingRAGBot() {
 
       if (check.exists) {
         addBotMessage(
-          `⚠️ Email \`${rawText}\` already exists in database!\n\nAap is account se directly login kar sakte hain:`,
+          `⚠️ Email \`${rawText}\` already exists in the database!\n\nYou can log in directly using this account:`,
           "suggest_login",
           rawText
         );
@@ -535,7 +535,7 @@ export default function FloatingRAGBot() {
       }
 
       setPendingEmail(rawText);
-      addBotMessage(`Email verified! Ab aap apna **Full Name / Username** enter karein:`);
+      addBotMessage(`✅ Email verified! Now please enter your **Full Name / Username**:`);
       setAuthStep("awaiting_reg_name");
       return;
     }
@@ -544,7 +544,7 @@ export default function FloatingRAGBot() {
     if (authStep === "awaiting_reg_name") {
       setPendingName(rawText);
       addBotMessage(
-        `Thanks, **${rawText}**! Ab ek secure **Password** choose karein (Bcrypt se encrypt hoga).\n\n📋 **Password Policy Requirements:**\n• Kam se kam **8 characters**\n• Ek **Uppercase letter (A-Z)**\n• Ek **Lowercase letter (a-z)**\n• Ek **Number (0-9)**\n• Ek **Special character (!@#$%^&*)**`
+        `Thanks, **${rawText}**! Now choose a secure **Password** (encrypted with Bcrypt).\n\n📋 **Password Policy Requirements:**\n• Minimum **8 characters**\n• At least one **Uppercase letter (A-Z)**\n• At least one **Lowercase letter (a-z)**\n• At least one **Numeric digit (0-9)**\n• At least one **Special character (!@#$%^&*)**`
       );
       setAuthStep("awaiting_reg_pwd");
       return;
@@ -555,7 +555,7 @@ export default function FloatingRAGBot() {
       const pwdEval = evaluatePasswordRequirements(rawText);
       if (!pwdEval.isValid) {
         addBotMessage(
-          `⚠️ **Password Requirements Poore Nahi Huye!** (${pwdEval.passedCount}/${pwdEval.totalCount} points match huye)\n\nAapka password security policy ke mutabik strong hona zaroori hai taaki candidate data safe rahe. Niche diye gaye requirements check karein aur jo point missing hai use add karke dobara enter karein:`,
+          `⚠️ **Password Requirements Not Met!** (${pwdEval.passedCount}/${pwdEval.totalCount} criteria satisfied)\n\nYour password must fulfill the security policy to ensure your candidate data is safeguarded. Please check the requirements below and try again:`,
           "pwd_requirements",
           undefined,
           pwdEval.requirements
@@ -571,7 +571,7 @@ export default function FloatingRAGBot() {
 
     // General Fallback
     addBotMessage(
-      "🤖 I am your **Candidate Auth Concierge**.\n\nAap directly likh sakte hain:\n• `login <email> <password>`\n• Type **'login'** to sign in\n• Type **'create account'** to register."
+      "🤖 I am your **Candidate Auth Concierge**.\n\nYou can:\n• Enter `login <email> <password>` directly\n• Type **'login'** to sign in\n• Type **'create account'** to register."
     );
   };
 
@@ -596,7 +596,7 @@ export default function FloatingRAGBot() {
       {
         id: "reset-init",
         sender: "bot",
-        text: "👋 Chat reset! How can I assist you?\n\n• Apna **username aur password** chat me likh kar login karein\n• Ya naya candidate account create karne ke liye niche click karein:",
+        text: "👋 Chat reset! How can I assist you?\n\n• Enter your **username and password** in chat to log in\n• Or click below to create a new candidate account:",
         actionType: "login_prompt",
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }

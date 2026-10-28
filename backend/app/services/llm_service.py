@@ -73,7 +73,8 @@ class LLMService:
             "You are a principal academic research scientist and peer-reviewer. "
             "Answer the user query strictly using the provided context passages. "
             "Do not hallucinate facts or citations. Every claim must reference the passage numbers [Source X]. "
-            "If the provided context does not contain sufficient evidence, explicitly state that evidence is insufficient."
+            "If the provided context does not contain sufficient evidence, explicitly state that evidence is insufficient. "
+            "Always respond in clear, professional, academic English."
         )
 
         user_prompt = f"User Query: {query}\n\nRetrieved Academic Context:\n{context_str}"

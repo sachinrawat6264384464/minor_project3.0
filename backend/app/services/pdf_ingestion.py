@@ -149,6 +149,7 @@ class PDFIngestionService:
             embeddings = embedding_service.embed_documents(chunk_texts)
 
             for idx, c_info in enumerate(chunks_data):
+                emb = embeddings[idx] if idx < len(embeddings) else []
                 chunk_obj = DocumentChunk(
                     paper_id=c_info["paper_id"],
                     project_id=c_info["project_id"],
@@ -156,8 +157,10 @@ class PDFIngestionService:
                     content=c_info["content"],
                     section_name=c_info["section_name"],
                     page_number=c_info["page_number"],
-                    embedding=embeddings[idx] if idx < len(embeddings) else []
+                    embedding=emb
                 )
+                if hasattr(chunk_obj, "embedding_vec") and emb:
+                    chunk_obj.embedding_vec = emb
                 db.add(chunk_obj)
 
             # Extract basic findings heuristics if LLM isn't present
@@ -218,6 +221,7 @@ class PDFIngestionService:
             # Create document chunk
             chunk_texts = [summary_content]
             embeddings = embedding_service.embed_documents(chunk_texts)
+            emb0 = embeddings[0] if embeddings else []
             chunk_obj = DocumentChunk(
                 paper_id=paper.id,
                 project_id=paper.project_id,
@@ -225,8 +229,10 @@ class PDFIngestionService:
                 content=summary_content,
                 section_name="Abstract & Overview",
                 page_number=1,
-                embedding=embeddings[0] if embeddings else []
+                embedding=emb0
             )
+            if hasattr(chunk_obj, "embedding_vec") and emb0:
+                chunk_obj.embedding_vec = emb0
             db.add(chunk_obj)
 
             paper.extracted_findings = {

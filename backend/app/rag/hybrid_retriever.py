@@ -1,9 +1,8 @@
 from typing import List, Dict, Any
-import numpy as np
 
 class HybridRRFRetriever:
     """
-    Combines Dense Vector Retrieval and BM25 Lexical Retrieval using Reciprocal Rank Fusion (RRF).
+    Combines Dense Vector Retrieval and Lexical Retrieval using Reciprocal Rank Fusion (RRF).
     Formula: RRF_score(doc) = sum( 1.0 / (k + rank_i(doc)) ) for each retriever i.
     """
     def reciprocal_rank_fusion(
@@ -13,22 +12,34 @@ class HybridRRFRetriever:
         rrf_k: int = 60,
         top_k: int = 10
     ) -> List[Dict[str, Any]]:
-        scores = {}
-        chunks_by_id = {}
+        scores: Dict[str, float] = {}
+        chunks_by_id: Dict[str, Dict[str, Any]] = {}
 
         # 1. Process Dense Ranks
         for rank, chunk in enumerate(dense_results):
             cid = chunk["id"]
-            chunks_by_id[cid] = chunk
+            if cid not in chunks_by_id:
+                chunks_by_id[cid] = chunk.copy()
+            else:
+                chunks_by_id[cid].update(chunk)
+            chunks_by_id[cid]["dense_rank"] = rank + 1
             scores[cid] = scores.get(cid, 0.0) + (1.0 / (rrf_k + rank + 1))
 
-        # 2. Process Sparse BM25 Ranks
+        # 2. Process Sparse (FTS / BM25) Ranks
         for rank, chunk in enumerate(sparse_results):
             cid = chunk["id"]
-            chunks_by_id[cid] = chunk
+            if cid not in chunks_by_id:
+                chunks_by_id[cid] = chunk.copy()
+            else:
+                # Merge sparse metadata without overwriting existing dense score
+                c_copy = chunk.copy()
+                if "dense_score" in chunks_by_id[cid]:
+                    c_copy["dense_score"] = chunks_by_id[cid]["dense_score"]
+                chunks_by_id[cid].update(c_copy)
+            chunks_by_id[cid]["sparse_rank"] = rank + 1
             scores[cid] = scores.get(cid, 0.0) + (1.0 / (rrf_k + rank + 1))
 
-        # 3. Sort by RRF score
+        # 3. Sort by RRF score descending
         sorted_ids = sorted(scores.keys(), key=lambda cid: scores[cid], reverse=True)
 
         final_chunks = []

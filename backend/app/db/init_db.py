@@ -2,20 +2,18 @@ from sqlalchemy.orm import Session
 from app.db.session import engine
 from app.models import Base, User
 from app.core.security import get_password_hash
-
 from sqlalchemy import text
 from app.core.config import settings
 
 def init_db(db: Session) -> None:
-    # If using PostgreSQL / Neon, ensure pgvector extension is enabled
+    # If using PostgreSQL / Neon, ensure pgvector extension and FTS migration are enabled
     if not settings.DATABASE_URL.startswith("sqlite"):
         try:
-            with engine.connect() as conn:
-                conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector;"))
-                conn.commit()
-                print("pgvector extension initialized on PostgreSQL / Neon.")
+            from app.db.migrate_vector_fts import run_migration
+            migration_res = run_migration()
+            print("Vector & FTS Migration initialized on PostgreSQL / Neon:", migration_res.get("status"))
         except Exception as e:
-            print(f"pgvector extension check note: {e}")
+            print(f"Vector/FTS migration note: {e}")
 
     # Create tables if not present
     Base.metadata.create_all(bind=engine)

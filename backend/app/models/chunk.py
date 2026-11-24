@@ -4,6 +4,12 @@ from datetime import datetime, timezone
 import uuid
 from app.db.session import Base
 
+try:
+    from pgvector.sqlalchemy import Vector
+    HAS_PGVECTOR = True
+except ImportError:
+    HAS_PGVECTOR = False
+
 class DocumentChunk(Base):
     __tablename__ = "document_chunks"
 
@@ -18,6 +24,10 @@ class DocumentChunk(Base):
     
     # Store JSON list of floats for embedding vector compatibility across SQLite/pgvector
     embedding = Column(JSON, nullable=True)
+    
+    # Native pgvector column for HNSW indexing in PostgreSQL (384-dim for bge-small-en-v1.5)
+    if HAS_PGVECTOR:
+        embedding_vec = Column(Vector(384), nullable=True)
     
     # Metadata for parent-child context
     parent_id = Column(String, nullable=True)
